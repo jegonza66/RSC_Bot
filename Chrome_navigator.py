@@ -1,0 +1,559 @@
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.select import Select
+from selenium.webdriver.common.action_chains import ActionChains
+from webdriver_manager.chrome import ChromeDriverManager
+from datetime import datetime
+
+
+def verba_connect_login(Credentials):
+    Verba_Username = Credentials['Verba_Username']
+    Verba_Password = Credentials['Verba_Password']
+
+    # Login to Verba Connect
+    driver = webdriver.Chrome(ChromeDriverManager().install())
+    # Open the website
+    driver.get('https://verbaconnect.com/auth/vst/login')
+
+    # Select the id box
+    id_box = driver.find_element(By.ID, 'username')
+    # Send id information
+    id_box.send_keys(Verba_Username)
+
+    # Find password box
+    pass_box = driver.find_element(By.ID, 'password')
+    # Send password
+    pass_box.send_keys(Verba_Password)
+
+    # Find login button
+    login_button_css = 'button[type="submit"]'
+    login_button = driver.find_element(By.CSS_SELECTOR, login_button_css)
+    # Click login
+    login_button.click()
+    input('\nLogin to Verba Connect ready? Make the window fullscreen and press Enter to continue.')
+    driver.maximize_window()
+    return driver
+
+
+def verba_open_school(driver, Verba_School):
+    School_Selected = False
+    # select school
+    try:
+        # Open school menu
+        drop_down_xpath = '/ html / body / div[1] / div / nav / div[2] / div[1] / div[1]'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, drop_down_xpath)))
+        drop_down_menu = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, drop_down_xpath)))
+        drop_down_menu.click()
+
+        school_menu_xpath = '/ html / body / div[1] / div / nav / div[2] / div[1] / div[2] / div / div[1] / div / select'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, school_menu_xpath)))
+        school_menu = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, school_menu_xpath)))
+        school_menu_select = Select(school_menu)
+        school_menu_select.select_by_visible_text(Verba_School)
+        School_Selected = True
+        print('School Selected')
+    except:
+        # Try Again
+        time.sleep(2)
+        try:
+            # Open school menu
+            drop_down_xpath = '/ html / body / div[1] / div / nav / div[2] / div[1] / div[1]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, drop_down_xpath)))
+            drop_down_menu = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, drop_down_xpath)))
+            drop_down_menu.click()
+
+            school_menu_xpath = '/ html / body / div[1] / div / nav / div[2] / div[1] / div[2] / div / div[1] / div / select'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, school_menu_xpath)))
+            school_menu = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, school_menu_xpath)))
+            school_menu_select = Select(school_menu)
+            school_menu_select.select_by_visible_text(Verba_School)
+            School_Selected = True
+            print('School Selected')
+        except:
+            print('Could not Open School')
+            driver.refresh()
+            time.sleep(3)
+
+    return School_Selected
+
+
+def verba_open_catalog(driver, Catalog):
+
+    Catalog_Selected = False
+    # Select Catalog
+    try:
+        # Find and click on list of catalogs
+        catalog_menu_xpath = '/ html / body / div[1] / div / nav / div[1] / div[1] / div[1]'
+        # Click catalog drop down menu
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, catalog_menu_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, catalog_menu_xpath))).click()
+        # Select catalog
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.LINK_TEXT, str(Catalog).upper())))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.LINK_TEXT, str(Catalog).upper()))).click()
+
+        Catalog_Selected = True
+        print('Catalog Selected')
+    except:
+        # Try Again
+        time.sleep(2)
+        try:
+            # Find and click on list of catalogs
+            catalog_menu_xpath = '/ html / body / div[1] / div / nav / div[1] / div[1] / div[1]'
+            # Click catalog drop down menu
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, catalog_menu_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, catalog_menu_xpath))).click()
+            # Select catalog
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.LINK_TEXT, str(Catalog).upper())))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.LINK_TEXT, str(Catalog).upper()))).click()
+
+            Catalog_Selected = True
+            print('Catalog Selected')
+        except:
+            print('Could not find Catalog name')
+            driver.refresh()
+            time.sleep(3)
+
+    return Catalog_Selected
+
+
+def verba_open_item_menu(driver):
+    Items_Menu_Open = False
+    # Open Items Menu
+    try:
+        Items_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / a / div'
+        Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+        # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
+        ActionChains(driver).move_to_element(Items_tab).perform()
+        # click connect items tab
+        connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+        # Click search bar to chek if open
+        search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
+        search_item = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, search_bar_xpath)))
+        search_item.click()
+        Items_Menu_Open = True
+        print('Items Menu Open')
+    except:
+        time.sleep(1)
+        # Try again
+        try:
+            Items_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / a / div'
+            Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+            # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
+            ActionChains(driver).move_to_element(Items_tab).perform()
+            # click connect items tab
+            connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+            # Click search bar to chek if open
+            search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
+            search_item = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, search_bar_xpath)))
+            search_item.click()
+            Items_Menu_Open = True
+            print('Items Menu Open')
+        except:
+            print('Could not Open Items Menu')
+            driver.refresh()
+            time.sleep(3)
+   
+    return Items_Menu_Open
+
+
+def verba_open_item(driver, sku):
+    Item_Open = False
+    # Search and open Item
+    try:
+        search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
+        search_item = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_bar_xpath)))
+        search_item.clear()
+        search_item.send_keys(sku)
+
+        search_button = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[2] / button'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_button)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_button))).click()
+
+        # Search all items matching SKU, and open first
+        item = driver.find_elements(By.XPATH, "//span[text() = '{}']".format(sku))[0]
+        div = item.find_element(By.XPATH, '..')
+        div2 = div.find_element(By.XPATH, '..')
+        h3 = div2.find_element(By.XPATH, './/h3[@class = "src-library-ItemInfo-View-title"]')
+        a = h3.find_element(By.XPATH, './/a').click()
+
+        Item_Open = True
+        print('Item Open')
+    except:
+        time.sleep(1)
+        # Try Again
+        try:
+            search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
+            search_item = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_bar_xpath)))
+            search_item.clear()
+            search_item.send_keys(sku)
+
+            search_button = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[2] / button'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_button)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_button))).click()
+
+            # Search all items matching SKU, and open first
+            item = driver.find_elements(By.XPATH, "//span[text() = '{}']".format(sku))[0]
+            div = item.find_element(By.XPATH, '..')
+            div2 = div.find_element(By.XPATH, '..')
+            h3 = div2.find_element(By.XPATH, './/h3[@class = "src-library-ItemInfo-View-title"]')
+            a = h3.find_element(By.XPATH, './/a').click()
+
+            Item_Open = True
+            print('Item Open')
+        except:
+            time.sleep(2)
+            try:
+                search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
+                WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
+                search_item = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_bar_xpath)))
+                search_item.clear()
+                search_item.send_keys(sku)
+
+                search_button = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[2] / button'
+                WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, search_button)))
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, search_button))).click()
+
+                # Search all items matching SKU, and open first
+                item = driver.find_elements(By.XPATH, "//span[text() = '{}']".format(sku))[0]
+                div = item.find_element(By.XPATH, '..')
+                div2 = div.find_element(By.XPATH, '..')
+                h3 = div2.find_element(By.XPATH, './/h3[@class = "src-library-ItemInfo-View-title"]')
+                a = h3.find_element(By.XPATH, './/a').click()
+
+                Item_Open = True
+                print('Item Open')
+            except:
+                print('Could not Open Item')
+
+    return Item_Open
+
+
+def verba_active_schedule(driver, department_name, course_number, section_code):
+    Course_Active = 'NOT FOUND'
+    schedule = None
+    try:
+        time.sleep(1)
+        # Find department and course
+        WebDriverWait(driver, 2).until(
+            EC.visibility_of_all_elements_located((
+                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((
+                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+        h3s = driver.find_elements(By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))
+
+        if len(h3s):
+            print('Course found')
+            for h3 in h3s:
+                div_course = h3.find_element(By.XPATH, '..')
+                try:
+                    # Find section within dpt and course
+                    WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                    h4 = div_course.find_element(By.XPATH, './/h4[text()= "{}"]'.format(section_code))
+                    print('Section found')
+                    break
+                except:
+                    pass
+
+        div = h4.find_element(By.XPATH, '..')
+        li = div.find_element(By.XPATH, '..')
+
+        # Check if Active
+        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+        WebDriverWait(driver, 2).until(
+            EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+        button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+        button.click()
+        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+        WebDriverWait(driver, 2).until(
+            EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+        Course_Active = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
+        # Check Schedule
+        try:
+            ul = li.find_element(By.XPATH, '..')
+            div1 = ul.find_element(By.XPATH, '..')
+            div2 = div1.find_element(By.XPATH, '..')
+            div3 = div2.find_element(By.XPATH, '..')
+
+            WebDriverWait(driver, 2).until(
+                EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+            schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+            schedule = schedules_menu.first_selected_option.text
+        except: pass
+    except:
+        time.sleep(2)
+        try:
+            # Find department and course
+            WebDriverWait(driver, 2).until(
+                EC.visibility_of_all_elements_located((
+                    By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((
+                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+            h3s = driver.find_elements(By.XPATH,
+                                       '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))
+            if len(h3s):
+                print('Course found')
+                for h3 in h3s:
+                    div_course = h3.find_element(By.XPATH, '..')
+                    try:
+                        # Find section within dpt and course
+                        WebDriverWait(driver, 2).until(
+                            EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                        WebDriverWait(driver, 2).until(
+                            EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                        h4 = div_course.find_element(By.XPATH, './/h4[text()= "{}"]'.format(section_code))
+                        print('Section found')
+                        break
+                    except:
+                        pass
+
+            div = h4.find_element(By.XPATH, '..')
+            li = div.find_element(By.XPATH, '..')
+
+            # Check if Active
+            WebDriverWait(driver, 2).until(
+                EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            WebDriverWait(driver, 2).until(
+                EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+            button.click()
+            WebDriverWait(driver, 2).until(
+                EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            WebDriverWait(driver, 2).until(
+                EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            Course_Active = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[
+                0].get_attribute("textContent")
+            # Check Schedule
+            try:
+                ul = li.find_element(By.XPATH, '..')
+                div1 = ul.find_element(By.XPATH, '..')
+                div2 = div1.find_element(By.XPATH, '..')
+                div3 = div2.find_element(By.XPATH, '..')
+
+                WebDriverWait(driver, 2).until(
+                    EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+                schedules_menu = Select(
+                    WebDriverWait(div3, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                schedule = schedules_menu.first_selected_option.text
+            except:
+                pass
+        except:
+            print('Section not found')
+
+    return Course_Active, schedule
+
+
+def verba_price(driver):
+    net_price = None
+    student_price = None
+    Price_checked = False
+    time.sleep(1)
+    try:
+        pricing_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / ul / li[2] / a'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, pricing_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, pricing_xpath))).click()
+
+        net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+        net_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[1]
+
+        student_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[1] / div / div / h3 / span'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, student_price_xpath)))
+        student_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, student_price_xpath))).text.split('$')[1]
+        Price_checked = True
+        print('Price checked correctly')
+        return Price_checked, float(net_price), float(student_price)
+    except:
+        time.sleep(2)
+        try:
+            pricing_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / ul / li[2] / a'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, pricing_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, pricing_xpath))).click()
+
+            net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+            net_price = \
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[1]
+
+            student_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[1] / div / div / h3 / span'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, student_price_xpath)))
+            student_price = \
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, student_price_xpath))).text.split('$')[
+                1]
+            Price_checked = True
+            print('Price checked correctly')
+            return Price_checked, float(net_price), float(student_price)
+        except:
+            print('Could not get prices')
+            driver.refresh()
+            time.sleep(3)
+    return Price_checked, net_price, student_price
+
+
+def verba_dashboard_schedule(driver, start_date, end_date):
+    opt_out_date = 'NOT FOUND'
+    invoice_date = 'NOT FOUND'
+    schedule_start_date = 'NOT FOUND'
+    time.sleep(1)
+    try:
+        # Open Dashboard
+        Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+
+        # Find schedule
+        h3 = driver.find_element(By.XPATH, '//h3[text()= "{}"]'.format(' - '.join([start_date, end_date])))
+        div = h3.find_element(By.XPATH, '..')
+
+        # Find shcedule start
+        schedule_start_text = div.find_element(By.XPATH, './/h5[text()= "Schedule Start"]')
+        # Find opt out date
+        div_schedule_start = schedule_start_text.find_element(By.XPATH, '..')
+        schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
+
+        # Find opt out
+        opt_out_text = div.find_element(By.XPATH, './/h5[text()= "Opt-Outs End"]')
+        #Find opt out date
+        div_opt_out = opt_out_text.find_element(By.XPATH, '..')
+        opt_out_date_text = div_opt_out.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
+
+        # Find invoice
+        invoice_text = div.find_element(By.XPATH, './/h5[text()= "Invoice Issued"]')
+        # Find Invoice date
+        div_invoice = invoice_text.find_element(By.XPATH, '..')
+        invoice_date_text = div_invoice.find_element(By.CLASS_NAME,
+                                                     "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
+
+        year = datetime.strptime(start_date, '%Y-%m-%d').year
+        schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0],
+                                                          opt_out_date_text[1]]), "%Y-%B-%d")
+        opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]), "%Y-%B-%d")
+        invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
+    except:
+        time.sleep(2)
+        try:
+            # Open Dashboard
+            Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+
+            # Find schedule
+            h3 = driver.find_element(By.XPATH, '//h3[text()= "{}"]'.format(' - '.join([start_date, end_date])))
+            div = h3.find_element(By.XPATH, '..')
+
+            # Find shcedule start
+            schedule_start_text = div.find_element(By.XPATH, './/h5[text()= "Schedule Start"]')
+            # Find opt out date
+            div_schedule_start = schedule_start_text.find_element(By.XPATH, '..')
+            schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME,
+                                                                       "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
+                '\n')
+
+            # Find opt out
+            opt_out_text = div.find_element(By.XPATH, './/h5[text()= "Opt-Outs End"]')
+            # Find opt out date
+            div_opt_out = opt_out_text.find_element(By.XPATH, '..')
+            opt_out_date_text = div_opt_out.find_element(By.CLASS_NAME,
+                                                         "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
+                '\n')
+
+            # Find invoice
+            invoice_text = div.find_element(By.XPATH, './/h5[text()= "Invoice Issued"]')
+            # Find opt out date
+            div_invoice = invoice_text.find_element(By.XPATH, '..')
+            invoice_date_text = div_invoice.find_element(By.CLASS_NAME,
+                                                         "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
+                '\n')
+
+            year = datetime.strptime(start_date, '%Y-%m-%d').year
+            schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0],
+                                                              opt_out_date_text[1]]), "%Y-%B-%d")
+            opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]),
+                                             "%Y-%B-%d")
+            invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]),
+                                             "%Y-%B-%d")
+
+        except:
+            print('Could not find Opt Out and Invoice Dates')
+            driver.refresh()
+            time.sleep(3)
+
+    return schedule_start_date, opt_out_date, invoice_date
+
+
+def verba_active_catalog(driver):
+    div_button_text = 'NOT FOUND'
+
+    try:
+        # Open Dashboard
+        Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+        # Check if Active Catalog:
+        div_button_text = driver.find_element(By.CLASS_NAME, 'src-dashboard-page-Activation-View-activation').text
+
+    except:
+        time.sleep(2)
+        try:
+            # Open Dashboard
+            Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+            # Check if Active Catalog:
+            div_button_text = driver.find_element(By.CLASS_NAME, 'src-dashboard-page-Activation-View-activation').text
+
+        except:
+            print('Could not check if Catalog Active')
+            driver.refresh()
+            time.sleep(3)
+
+    return div_button_text
+
+def verba_ask_report(driver, tenant_id, Catalog):
+    Asked_for_report = False
+
+    try:
+        # Open Reports
+        Reports_xpath = '/ html / body / div[1] / div / nav / div[1] / a[6]'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Reports_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Reports_xpath))).click()
+
+        # Click email report button
+        '/ html / body / div[1] / div / div[1] / div / div[2] / div / div / div[3] / div[2] / div / button'
+        email_report_button_xpath = '/ html / body / div[1] / div / div[1] / div / div[2] / div / div / div[3] / div[2] / div / button'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, email_report_button_xpath)))
+        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, email_report_button_xpath))).click()
+
+        Asked_for_report = True
+    except:
+        time.sleep(2)
+        try:
+            # Open Reports
+            Reports_xpath = '/ html / body / div[1] / div / nav / div[1] / a[6]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Reports_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Reports_xpath))).click()
+
+            # Click email report button
+            '/ html / body / div[1] / div / div[1] / div / div[2] / div / div / div[3] / div[2] / div / button'
+            email_report_button_xpath = '/ html / body / div[1] / div / div[1] / div / div[2] / div / div / div[3] / div[2] / div / button'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, email_report_button_xpath)))
+            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, email_report_button_xpath))).click()
+
+            Asked_for_report = True
+        except:
+            print('Could not Ask for report')
+            driver.refresh()
+            time.sleep(3)
+
+    return Asked_for_report
