@@ -7,31 +7,31 @@ from tkinter import filedialog
 import Functions
 
 
-def load_files():
-    # Read files
-    print('Please use the dialog window to go to the location of the OLD adoption file.')
-    # Open file explorer dialog
-    root = tk.Tk()
-    root.withdraw()
-    Adoption_old_path = filedialog.askopenfilename()
+def load_files(adoption_files_path):
 
-    print('Please use the dialog window to go to the location of the NEW adoption file.')
-    root = tk.Tk()
-    root.withdraw()
-    Adoption_new_path = filedialog.askopenfilename()
+    if adoption_files_path is None:
+        # Read files
+        print('Please use the dialog window to go to the location of the OLD adoption file.')
+        # Open file explorer dialog
+        root = tk.Tk()
+        root.withdraw()
+        Adoption_old_path = filedialog.askopenfilename()
+
+        print('Please use the dialog window to go to the location of the NEW adoption file.')
+        root = tk.Tk()
+        root.withdraw()
+        Adoption_new_path = filedialog.askopenfilename()
+
+    else:
+        Adoption_old_path = adoption_files_path[0]
+        Adoption_new_path = adoption_files_path[1]
 
     print('Loading Old adoption file...')
-    try:
-        Old_ad_file = pd.read_csv(Adoption_old_path)
-    except:
-        Old_ad_file = pd.read_excel(Adoption_old_path)
+    Old_ad_file = pd.read_csv(Adoption_old_path)
     print('Done')
 
     print('Loading new adoption file...')
-    try:
-        New_ad_file = pd.read_csv(Adoption_new_path)
-    except:
-        New_ad_file = pd.read_excel(Adoption_new_path)
+    New_ad_file = pd.read_csv(Adoption_new_path)
     print('Done')
 
     New_ad_file['section_code_DD'] = New_ad_file['section_code'].str.replace(r'^(0+)', '', regex=True)

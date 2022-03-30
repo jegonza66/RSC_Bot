@@ -5,32 +5,36 @@ from tkinter import filedialog
 
 import Functions
 
-def load_files():
+def load_files(enrollment_files_path):
 
-    # Read files
-    print('Please use the dialog window to go to the location of the OLD enrollment file.')
-    # Open file explorer dialog
-    root = tk.Tk()
-    root.withdraw()
-    Adoption_old_path = filedialog.askopenfilename()
+    if enrollment_files_path is None:
+        # Read files
+        print('Please use the dialog window to go to the location of the OLD enrollment file.')
+        # Open file explorer dialog
+        root = tk.Tk()
+        root.withdraw()
+        Enrollment_old_path = filedialog.askopenfilename()
 
-    print('Please use the dialog window to go to the location of the NEW enrollment file.')
-    root = tk.Tk()
-    root.withdraw()
-    Adoption_new_path = filedialog.askopenfilename()
+        print('Please use the dialog window to go to the location of the NEW enrollment file.')
+        root = tk.Tk()
+        root.withdraw()
+        Enrollment_new_path = filedialog.askopenfilename()
+    else:
+        Enrollment_old_path = enrollment_files_path[0]
+        Enrollment_new_path = enrollment_files_path[1]
 
     print('Loading OLD enrollment file...')
     try:
-        Old_en_file = pd.read_csv(Adoption_old_path)
+        Old_en_file = pd.read_csv(Enrollment_old_path)
     except:
-        Old_en_file = pd.read_excel(Adoption_old_path)
+        Old_en_file = pd.read_excel(Enrollment_old_path)
     print('Done')
 
     print('Loading NEW enrollment file...')
     try:
-        New_en_file = pd.read_csv(Adoption_new_path)
+        New_en_file = pd.read_csv(Enrollment_new_path)
     except:
-        New_en_file = pd.read_excel(Adoption_new_path)
+        New_en_file = pd.read_excel(Enrollment_new_path)
     print('Done')
 
     return Old_en_file, New_en_file

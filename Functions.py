@@ -115,7 +115,6 @@ def wait_slurpee(DD_update):
                                 'Hours:'.format(missing_rows)))
         except ValueError:
             print("That's not an number!")
-
     print('Waiting until {} for Slurpee to finish changes before checking...'.format(format(datetime.now() + timedelta(hours=hours),
                                                                                             '%H:%M:%S')))
     time.sleep(3600 * hours)

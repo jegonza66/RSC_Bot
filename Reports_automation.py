@@ -119,20 +119,36 @@ def get_reports(driver, DD_update):
                                                          driver=driver, DD_update=DD_update)
     DD_update = DD_update_drop_schools_catalogs_report(schools_catalogs_report=schools_catalogs_report, DD_update=DD_update)
 
-    return DD_update, schools_catalogs_report
+    if schools_catalogs_report != {}:
+        Answer = input('\nDid you recieved the reports on your email?\n'
+                       'Please answer "yes" or "no":')
+        yes = {'yes', 'y', 'ye'}
+        while Answer in yes:
+            try:
+                print('\nPlease select the folder containing the reports.')
+                root = tk.Tk()
+                root.withdraw()
+                reports_folder_path = filedialog.askdirectory()
+
+            except:
+                pass
+    else:
+        reports_folder_path = ''
+    return DD_update, schools_catalogs_report, reports_folder_path
 
 
-def ask_if_got_reports():
+def ask_if_got_reports(reports_folder_path):
     Answer = input('\nDid you recieved the reports on your email?\n'
                    'Please answer "yes" or "no":')
     yes = {'yes', 'y', 'ye'}
     Reports = False
     while Answer in yes:
         try:
-            print('\nPlease put all the reports in one folder and use the dialog window to select that folder.')
-            root = tk.Tk()
-            root.withdraw()
-            reports_folder_path = filedialog.askdirectory()
+            if reports_folder_path == '':
+                print('\nPlease put all the reports in one folder and use the dialog window to select that folder.')
+                root = tk.Tk()
+                root.withdraw()
+                reports_folder_path = filedialog.askdirectory()
 
             all_filenames = [i.replace('\\', '/') for i in glob.glob(os.path.join(reports_folder_path, '*.xlsx'))]
             Reports = pd.concat([pd.read_excel(f, sheet_name='Detail of Items with Sections', dtype='object') for f in all_filenames])
@@ -155,8 +171,8 @@ def ask_if_got_reports():
     return Reports
 
 
-def compare_reports(DD_update):
-    Reports = ask_if_got_reports()
+def compare_reports(DD_update, reports_folder_path):
+    Reports = ask_if_got_reports(reports_folder_path=reports_folder_path)
     if type(Reports) != bool:
         DD_Report_cases = DD_update.loc[(DD_update['Change made in Connect?'] == 'Report') &
                                         (DD_update['Type of Change'] != 'new enrollment') &
