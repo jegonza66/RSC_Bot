@@ -49,14 +49,14 @@ def complete_deactivated_catalog_section(DD_update):
 def run(adoption_files_path, enrollment_files_path, Credentials):
 
     # Load adoptions files
-    Old_ad_file, New_ad_file, date = Adoptions.load_files(adoption_files_path)
+    Old_ad_file, New_ad_file, date = Adoptions.load_files(adoption_files_path=adoption_files_path)
     # add new concantenated columns
     Old_ad_file, New_ad_file = Adoptions.add_new_columns(Old_ad_file=Old_ad_file, New_ad_file=New_ad_file)
     # Compare ald and new files
     DD_update = Adoptions.compare_make_DD_update(Old_ad_file=Old_ad_file, New_ad_file=New_ad_file)
 
     # Load enrollment files
-    Old_en_file, New_en_file = Enrollment.load_files(enrollment_files_path)
+    Old_en_file, New_en_file = Enrollment.load_files(enrollment_files_path=enrollment_files_path)
     # add new concantenated columns
     Old_en_file, New_en_file = Enrollment.add_new_columns(Old_en_file=Old_en_file, New_en_file=New_en_file)
     # Compare ald and new files

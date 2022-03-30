@@ -36,48 +36,6 @@ def seasons_of_date(date):
         return 'Winter {}. Last end date {}'.format(year, date.strftime("%m/%d/%Y"))
 
 
-def complete_deactivated_catalog_section(DD_update):
-
-    deactivated_catalogs = DD_update[DD_update['Type of Change'] == 'deactivated catalog'][
-        ['School', 'Catalog']].reset_index(drop=True)
-
-    for index, row in deactivated_catalogs.iterrows():
-        School = deactivated_catalogs.iloc[index]['School']
-        Catalog = deactivated_catalogs.iloc[index]['Catalog']
-
-        DD_update.loc[(DD_update['Type of Change'] == 'deactivated catalog') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Change made in Connect?'] = 'No Expected Change'
-
-        DD_update.loc[(DD_update['Type of Change'] == 'deactivated section') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Change made in Connect?'] = 'No Expected Change'
-
-    # Take new returned catalogs and set to no expected change, term has ended
-    today = datetime.today().date()
-    new_catalogs = DD_update['Catalog Last End Date'][(DD_update['Type of Change'] == 'new catalog')]
-    catalogs_dates = [datetime.strptime(date[1][-10:], '%m/%d/%Y').date() for date in
-                      new_catalogs.str.split('Last end date ')]
-    new_returned_catalogs_index = [catalog_end_date < today for catalog_end_date in catalogs_dates]
-    new_returned_catalogs = DD_update[(DD_update['Type of Change'] == 'new catalog')][
-        ['School', 'Catalog']][new_returned_catalogs_index]
-
-    for index, row in new_returned_catalogs.iterrows():
-        School = DD_update.iloc[index]['School']
-        Catalog = DD_update.iloc[index]['Catalog']
-
-        DD_update.loc[(DD_update['Type of Change'] == 'new catalog') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Change made in Connect?'] = 'No Expected Change'
-
-        DD_update.loc[(DD_update['Type of Change'] == 'new catalog') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Issue'] = 'term has ended'
-
-        DD_update.loc[(DD_update['Type of Change'] == 'new section') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Change made in Connect?'] = 'No Expected Change'
-
-        DD_update.loc[(DD_update['Type of Change'] == 'new section') & (DD_update['School'] == School) & (
-                DD_update['Catalog'] == Catalog), 'Issue'] = 'term has ended'
-
-    return DD_update
-
 def save_DD1(DD_update, Credentials, date):
     # DD1_Save = DD_update.loc[:, ~DD_update.columns.str.startswith('Extra')]
     DD1_Save = DD_update.sort_values(['Type of Change', 'School', 'Catalog']).reset_index(drop=True)
