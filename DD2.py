@@ -123,6 +123,10 @@ def check_new_item(row, index, previous_school, previous_catalog, DD_update, dri
                     if Price_checked and (net_price != connect_net_price) or (student_price != connect_student_price):
                         DD_update['Issue'][index] = 'SKU with multiple prices'
                         print('SKU with multiple prices')
+                else:
+                    DD_update['Change made in Connect?'][index] = 'No'
+                    DD_update['Reason change not made'][index] = 'No Logical Reason'
+                    print('Change not made')
 
     return DD_update, previous_school, previous_catalog
 
@@ -376,6 +380,11 @@ def check_deact_section(row, index, previous_school, previous_catalog, DD_update
                         if Past_Invoice:
                             DD_update['Reason change not made'][index] = 'No Logical Reason'
                         print('OK')
+
+                    if (Course_Active == 'Active') and not Past_Invoice:
+                        DD_update['Change made in Connect?'][index] = 'No'
+                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                        print('Change not made')
 
                 else:
                     DD_update['Change made in Connect?'][index] = 'Yes'

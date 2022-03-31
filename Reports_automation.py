@@ -124,14 +124,12 @@ def get_reports(driver, DD_update):
                        'Please answer "yes" or "no":')
         yes = {'yes', 'y', 'ye'}
         while Answer in yes:
-            try:
-                print('\nPlease move all the Report files to one folder and use the file explorer to'
-                      'select that folder.')
-                root = tk.Tk()
-                root.withdraw()
-                reports_folder_path = filedialog.askdirectory()
-            except:
-                pass
+            print('\nPlease move all the Report files to one folder and use the file explorer to '
+                  'select that folder.')
+            root = tk.Tk()
+            root.withdraw()
+            reports_folder_path = filedialog.askdirectory()
+            Answer = False
     else:
         reports_folder_path = ''
     return DD_update, schools_catalogs_report, reports_folder_path

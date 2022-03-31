@@ -61,12 +61,12 @@ def BNED_DD():
     # time.sleep(60)
     # os.system("shutdown.exe /h")
 
-schedule.every().monday.at("23:00").do(BNED_DD)
-schedule.every().tuesday.at("23:00").do(BNED_DD)
-schedule.every().wednesday.at("23:00").do(BNED_DD)
-schedule.every().thursday.at("00:55").do(BNED_DD)
-schedule.every().friday.at("23:00").do(BNED_DD)
+schedule.every().monday.at("00:00").do(BNED_DD)
+schedule.every().tuesday.at("00:00").do(BNED_DD)
+schedule.every().wednesday.at("00:00").do(BNED_DD)
+schedule.every().thursday.at("00:00").do(BNED_DD)
+schedule.every().friday.at("00:00").do(BNED_DD)
 
 while True:
     schedule.run_pending()
-    time.sleep(2)
+    time.sleep(60*30)
