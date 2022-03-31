@@ -25,7 +25,7 @@ def load_files(adoption_files_path):
         Adoption_new_path = filedialog.askopenfilename()
 
     else:
-        #
+        # Get files with right dates
         file_date = datetime.today().date().strftime('%Y%m%d')
         new_index = [file_date in file for file in adoption_files_path]
         old_index = [not el for el in new_index]

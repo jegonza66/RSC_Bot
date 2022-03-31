@@ -65,17 +65,21 @@ def extract_move_files():
         shutil.move(file, r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files')
 
 def get_new_old_files():
-    download_files()
-    extract_move_files()
-    # get old and new files
-    Files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
-    os.chdir(Files_dir)
-    files = filter(os.path.isfile, os.listdir(Files_dir))
-    files = [os.path.join(Files_dir, f) for f in files] # add path to each file
-    files.sort(key=lambda x: os.path.getmtime(x))
-    files = files[-4:]
+    try:
+        download_files()
+        extract_move_files()
+        # get old and new files
+        Files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
+        os.chdir(Files_dir)
+        files = filter(os.path.isfile, os.listdir(Files_dir))
+        files = [os.path.join(Files_dir, f) for f in files] # add path to each file
+        files.sort(key=lambda x: os.path.getmtime(x))
+        files = files[-4:]
 
-    adoption_files_path = [file for file in files if 'adoption' in file]
-    enrollment_files_path = [file for file in files if 'enrollment' in file]
+        adoption_files_path = [file for file in files if 'adoption' in file]
+        enrollment_files_path = [file for file in files if 'enrollment' in file]
+    except:
+        print('Could not download files. Pleas download them manually.')
+        adoption_files_path, enrollment_files_path = None, None
 
     return adoption_files_path, enrollment_files_path

@@ -125,11 +125,11 @@ def get_reports(driver, DD_update):
         yes = {'yes', 'y', 'ye'}
         while Answer in yes:
             try:
-                print('\nPlease select the folder containing the reports.')
+                print('\nPlease move all the Report files to one folder and use the file explorer to'
+                      'select that folder.')
                 root = tk.Tk()
                 root.withdraw()
                 reports_folder_path = filedialog.askdirectory()
-
             except:
                 pass
     else:
@@ -138,8 +138,11 @@ def get_reports(driver, DD_update):
 
 
 def ask_if_got_reports(reports_folder_path):
-    Answer = input('\nDid you recieved the reports on your email?\n'
-                   'Please answer "yes" or "no":')
+    if reports_folder_path == '':
+        Answer = input('\nDid you recieved the reports on your email?\n'
+                       'Please answer "yes" or "no":')
+    else:
+        Answer = 'yes'
     yes = {'yes', 'y', 'ye'}
     Reports = False
     while Answer in yes:
