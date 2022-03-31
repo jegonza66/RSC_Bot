@@ -1,4 +1,6 @@
 import time
+import schedule
+import os
 
 import Paths_Credentials
 import DD1
@@ -8,10 +10,8 @@ import Chrome_navigator
 import Reports_automation
 import Cyberduck
 
-import schedule
-import os
 
-def DD1():
+def BNED_DD():
     # Define DD_update file save path
     Credentials = Paths_Credentials.Path()
 
@@ -58,15 +58,15 @@ def DD1():
     # Save DD2_update final file (overwrites the other)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
 
-    time.sleep(60)
-    os.system("shutdown.exe /h")
+    # time.sleep(60)
+    # os.system("shutdown.exe /h")
 
-schedule.every().monday.at("23:00").do(DD1)
-schedule.every().tuesday.at("23:00").do(DD1)
-schedule.every().wednesday.at("23:00").do(DD1)
-schedule.every().thursday.at("23:00").do(DD1)
-schedule.every().friday.at("23:00").do(DD1)
+schedule.every().monday.at("23:00").do(BNED_DD)
+schedule.every().tuesday.at("23:00").do(BNED_DD)
+schedule.every().wednesday.at("23:00").do(BNED_DD)
+schedule.every().thursday.at("00:55").do(BNED_DD)
+schedule.every().friday.at("23:00").do(BNED_DD)
 
 while True:
     schedule.run_pending()
-    time.sleep(60*30)
+    time.sleep(2)

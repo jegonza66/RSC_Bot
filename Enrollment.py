@@ -2,6 +2,8 @@ import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
 import tkinter as tk
 from tkinter import filedialog
+from datetime import datetime
+from itertools import compress
 
 import Functions
 
@@ -20,21 +22,18 @@ def load_files(enrollment_files_path):
         root.withdraw()
         Enrollment_new_path = filedialog.askopenfilename()
     else:
-        Enrollment_old_path = enrollment_files_path[0]
-        Enrollment_new_path = enrollment_files_path[1]
+        file_date = datetime.today().date().strftime('%Y%m%d')
+        new_index = [file_date in file for file in enrollment_files_path]
+        old_index = [not el for el in new_index]
+        Enrollment_old_path = list(compress(enrollment_files_path, old_index))
+        Enrollment_new_path = list(compress(enrollment_files_path, new_index))
 
     print('Loading OLD enrollment file...')
-    try:
-        Old_en_file = pd.read_csv(Enrollment_old_path)
-    except:
-        Old_en_file = pd.read_excel(Enrollment_old_path)
+    Old_en_file = pd.read_csv(Enrollment_old_path)
     print('Done')
 
     print('Loading NEW enrollment file...')
-    try:
-        New_en_file = pd.read_csv(Enrollment_new_path)
-    except:
-        New_en_file = pd.read_excel(Enrollment_new_path)
+    New_en_file = pd.read_csv(Enrollment_new_path)
     print('Done')
 
     return Old_en_file, New_en_file

@@ -3,6 +3,8 @@ import numpy as np
 pd.options.mode.chained_assignment = None  # default='warn'
 import tkinter as tk
 from tkinter import filedialog
+from datetime import datetime
+from itertools import compress
 
 import Functions
 
@@ -23,8 +25,12 @@ def load_files(adoption_files_path):
         Adoption_new_path = filedialog.askopenfilename()
 
     else:
-        Adoption_old_path = adoption_files_path[0]
-        Adoption_new_path = adoption_files_path[1]
+        #
+        file_date = datetime.today().date().strftime('%Y%m%d')
+        new_index = [file_date in file for file in adoption_files_path]
+        old_index = [not el for el in new_index]
+        Adoption_old_path = list(compress(adoption_files_path, old_index))
+        Adoption_new_path = list(compress(adoption_files_path, new_index))
 
     print('Loading Old adoption file...')
     Old_ad_file = pd.read_csv(Adoption_old_path)
