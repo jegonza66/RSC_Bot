@@ -4,6 +4,7 @@ import DD2
 import Functions
 import Chrome_navigator
 import Reports_automation
+import Cyberduck
 
 
 # Define DD_update file save path
@@ -12,7 +13,17 @@ Credentials = Paths_Credentials.Path()
 # Get Verba Connect username and password
 Credentials = Paths_Credentials.Verba_Credentials(Credentials)
 
-adoption_files_path, enrollment_files_path = None, None
+# Ask if automatically download files from cyberduck
+if Credentials['Verba_Username'] == 'joaquin.gonzalez':
+    auto_cyberduck_download = input('Would you like to automatically download the files from cyberduck?')
+    yes = {'yes', 'y', 'ye'}
+    if auto_cyberduck_download in yes:
+        # Download adoption and enrollment files
+        adoption_files_path, enrollment_files_path = Cyberduck.get_new_old_files()
+    else:
+        adoption_files_path, enrollment_files_path = None, None
+else:
+    adoption_files_path, enrollment_files_path = None, None
 
 # DD1: adoptions and enrollments file comparison
 Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,
