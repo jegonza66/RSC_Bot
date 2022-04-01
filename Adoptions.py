@@ -29,8 +29,8 @@ def load_files(adoption_files_path):
         file_date = datetime.today().date().strftime('%Y%m%d')
         new_index = [file_date in file for file in adoption_files_path]
         old_index = [not el for el in new_index]
-        Adoption_old_path = list(compress(adoption_files_path, old_index))
-        Adoption_new_path = list(compress(adoption_files_path, new_index))
+        Adoption_old_path = list(compress(adoption_files_path, old_index))[0]
+        Adoption_new_path = list(compress(adoption_files_path, new_index))[0]
 
     print('Loading Old adoption file...')
     Old_ad_file = pd.read_csv(Adoption_old_path)

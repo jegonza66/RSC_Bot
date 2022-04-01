@@ -32,7 +32,7 @@ def download_files():
     # Download adoption
     pyautogui.doubleClick(62, 228)
     print('Downloading adoption')
-    time.sleep(60 * 2.5)
+    time.sleep(60 * 1.5)
 
 
 def extract_move_files():

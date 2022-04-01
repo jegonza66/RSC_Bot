@@ -25,8 +25,8 @@ def load_files(enrollment_files_path):
         file_date = datetime.today().date().strftime('%Y%m%d')
         new_index = [file_date in file for file in enrollment_files_path]
         old_index = [not el for el in new_index]
-        Enrollment_old_path = list(compress(enrollment_files_path, old_index))
-        Enrollment_new_path = list(compress(enrollment_files_path, new_index))
+        Enrollment_old_path = list(compress(enrollment_files_path, old_index))[0]
+        Enrollment_new_path = list(compress(enrollment_files_path, new_index))[0]
 
     print('Loading OLD enrollment file...')
     Old_en_file = pd.read_csv(Enrollment_old_path)

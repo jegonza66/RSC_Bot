@@ -69,4 +69,4 @@ schedule.every().friday.at("00:00").do(BNED_DD)
 
 while True:
     schedule.run_pending()
-    time.sleep(60*30)
+    time.sleep(60*15)
