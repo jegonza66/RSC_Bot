@@ -5,10 +5,10 @@ import gzip
 import shutil
 from datetime import datetime
 
-def download_files():
+def download_files(sort_date=False):
     os.system('start explorer shell:appsfolder\iterate.Cyberduck')
     print('Cyberduck Open')
-    time.sleep(10)
+    time.sleep(30)
 
     # Open bned
     pyautogui.doubleClick(125, 200)
@@ -24,6 +24,11 @@ def download_files():
     pyautogui.doubleClick(62, 208)
     print('Processed Open')
     time.sleep(20)
+
+    if sort_date:
+        pyautogui.click(1785, 175)
+        print('Sorted by Modified')
+        time.sleep(1)
 
     # Download enrollment
     pyautogui.doubleClick(62, 208)
@@ -43,8 +48,9 @@ def extract_move_files():
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f] # add path to each file
-    # files.sort(key=lambda x: os.path.getmtime(x))
-    # files = files[-2:]
+
+    if not len(files):
+        download_files(sort_date=True)
 
     # Extract gz downloads
     for file in files:

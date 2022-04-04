@@ -885,8 +885,12 @@ def run(DD_update, driver, total_count=5):
         count += 1
         if missing_rows:
             print('\n{}. Waiting to re-run on {} unchecked cases...'.format(count, missing_rows))
-            driver.refresh()
+            # driver.refresh()
+            # time.sleep(5)
+            driver.back()
             time.sleep(5)
+            previous_school = ''
+            previous_catalog = ''
     print('\nTotal run time: {}'.format(str(datetime.now() - startTime).split('.')[0]))
 
     return DD_update
