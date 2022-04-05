@@ -8,12 +8,12 @@ from datetime import datetime
 def download_files(sort_date=False):
     os.system('start explorer shell:appsfolder\iterate.Cyberduck')
     print('Cyberduck Open')
-    time.sleep(30)
+    time.sleep(20)
 
     # Open bned
     pyautogui.doubleClick(125, 200)
     print('BNED Open')
-    time.sleep(5)
+    time.sleep(7)
 
     # Open files
     pyautogui.doubleClick(62, 208)
@@ -27,6 +27,8 @@ def download_files(sort_date=False):
 
     if sort_date:
         pyautogui.click(1785, 175)
+        time.sleep(1)
+        pyautogui.click(1785, 175)
         print('Sorted by Modified')
         time.sleep(1)
 
@@ -37,26 +39,46 @@ def download_files(sort_date=False):
     # Download adoption
     pyautogui.doubleClick(62, 228)
     print('Downloading adoption')
-    time.sleep(60 * 1.5)
+    time.sleep(60 * 1)
+
+    # Close Cyberduck
+    pyautogui.click(1888, 22)
+    time.sleep(1)
+    pyautogui.click(800, 574)
+    print('Cyberduck Closed')
+
 
 
 def extract_move_files():
-    # Get downloaded files
 
+    # Get downloaded files
     file_date = datetime.today().date().strftime('%Y%m%d')
     downloads_dir = 'C:/Users/joaco/Downloads'
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
-    files = [os.path.join(downloads_dir, f) for f in files if file_date in f] # add path to each file
+    files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
 
-    if not len(files):
+    if len(files) != 2:
+        # Delete incorrect files
+        for file in files:
+            os.remove(file)
+
+        # Download files sorting by date
         download_files(sort_date=True)
+
+        # Get downloaded files
+        file_date = datetime.today().date().strftime('%Y%m%d')
+        downloads_dir = 'C:/Users/joaco/Downloads'
+        os.chdir(downloads_dir)
+        files = filter(os.path.isfile, os.listdir(downloads_dir))
+        files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
 
     # Extract gz downloads
     for file in files:
         with gzip.open(file, 'rb') as f_in:
             with open(file.split('.gz')[0], 'wb') as f_out:
                 shutil.copyfileobj(f_in, f_out)
+        os.remove(file)
 
     # get extracted files
     downloads_dir = 'C:/Users/joaco/Downloads'

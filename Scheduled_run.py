@@ -55,7 +55,7 @@ def BNED_DD():
     # Re run online check on missing report cases and No logical reason
     DD_update = DD2.run(DD_update=DD_update, driver=driver)
 
-    # Save DD2_update final file (overwrites the other)
+    # Save DD2_update final file (overwrites the first one)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
 
     # time.sleep(60)
