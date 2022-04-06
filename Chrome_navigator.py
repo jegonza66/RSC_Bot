@@ -247,15 +247,15 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
         # Find department and course
         WebDriverWait(driver, 2).until(
             EC.visibility_of_all_elements_located((
-                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+                By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
         WebDriverWait(driver, 2).until(EC.element_to_be_clickable((
-                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
-        h3s = driver.find_elements(By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))
+                By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+        h3s = driver.find_elements(By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))
 
         if len(h3s):
             print('Course found')
             for h3 in h3s:
-                div_course = h3.find_element(By.XPATH, '..')
+                div_course = h3.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                 try:
                     # Find section within dpt and course
                     WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
@@ -436,8 +436,7 @@ def verba_dashboard_schedule(driver, start_date, end_date):
                                                      "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
 
         year = datetime.strptime(start_date, '%Y-%m-%d').year
-        schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0],
-                                                          opt_out_date_text[1]]), "%Y-%B-%d")
+        schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0], schedule_start_date_text[1]]), "%Y-%B-%d")
         opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]), "%Y-%B-%d")
         invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
     except:
@@ -457,8 +456,7 @@ def verba_dashboard_schedule(driver, start_date, end_date):
             # Find opt out date
             div_schedule_start = schedule_start_text.find_element(By.XPATH, '..')
             schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME,
-                                                                       "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
-                '\n')
+                                                                       "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
 
             # Find opt out
             opt_out_text = div.find_element(By.XPATH, './/h5[text()= "Opt-Outs End"]')
@@ -478,7 +476,7 @@ def verba_dashboard_schedule(driver, start_date, end_date):
 
             year = datetime.strptime(start_date, '%Y-%m-%d').year
             schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0],
-                                                              opt_out_date_text[1]]), "%Y-%B-%d")
+                                                              schedule_start_date_text[1]]), "%Y-%B-%d")
             opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]),
                                              "%Y-%B-%d")
             invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]),

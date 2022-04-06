@@ -587,16 +587,17 @@ def check_start_date(row, index, previous_school, previous_catalog, DD_update, d
                                                                                                  department_name=department_name,
                                                                                                  course_number=course_number,
                                                                                                  section_code=section_code)
+                                if (schedule != None):
 
-                                if (schedule.split(' - ')[0] == new_start_date):
-                                    DD_update['Change made in Connect?'][index] = 'Yes'
-                                    DD_update['Reason change not made'][index] = 'No Logical Reason'
-                                    print('OK')
+                                    if (schedule.split(' - ')[0] == new_start_date):
+                                        DD_update['Change made in Connect?'][index] = 'Yes'
+                                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                        print('OK')
 
-                                elif (schedule != None) & (schedule.split(' - ')[0] != new_start_date):
-                                    DD_update['Change made in Connect?'][index] = 'No'
-                                    DD_update['Reason change not made'][index] = 'After Catalog Activation'
-                                    print('OK')
+                                    elif (schedule.split(' - ')[0] != new_start_date):
+                                        DD_update['Change made in Connect?'][index] = 'No'
+                                        DD_update['Reason change not made'][index] = 'After Catalog Activation'
+                                        print('OK')
 
                     # Si estoy despues del invoice:
                     # Chequear start y end date del item
@@ -612,16 +613,17 @@ def check_start_date(row, index, previous_school, previous_catalog, DD_update, d
                                                                                                  department_name=department_name,
                                                                                                  course_number=course_number,
                                                                                                  section_code=section_code)
+                                if (schedule != None):
 
-                                if (schedule.split(' - ')[0] == new_start_date):
-                                    DD_update['Change made in Connect?'][index] = 'Yes'
-                                    DD_update['Reason change not made'][index] = 'No Logical Reason'
-                                    print('OK')
+                                    if (schedule.split(' - ')[0] == new_start_date):
+                                        DD_update['Change made in Connect?'][index] = 'Yes'
+                                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                        print('OK')
 
-                                elif (schedule != None) & (schedule.split(' - ')[0] != new_start_date):
-                                    DD_update['Change made in Connect?'][index] = 'No Expected Change'
-                                    DD_update['Reason change not made'][index] = 'After Invoice'
-                                    print('OK')
+                                    elif (schedule.split(' - ')[0] != new_start_date):
+                                        DD_update['Change made in Connect?'][index] = 'No Expected Change'
+                                        DD_update['Reason change not made'][index] = 'After Invoice'
+                                        print('OK')
                 else:
                     print('Could not check invoice date')
 
@@ -638,15 +640,16 @@ def check_start_date(row, index, previous_school, previous_catalog, DD_update, d
                                                                                          department_name=department_name,
                                                                                          course_number=course_number,
                                                                                          section_code=section_code)
+                        if (schedule != None):
 
-                        if (schedule.split(' - ')[0] == new_start_date):
-                            DD_update['Change made in Connect?'][index] = 'Yes'
-                            print('OK')
+                            if (schedule.split(' - ')[0] == new_start_date):
+                                DD_update['Change made in Connect?'][index] = 'Yes'
+                                print('OK')
 
-                        elif (schedule != None) & (schedule.split(' - ')[0] != new_start_date):
-                            DD_update['Change made in Connect?'][index] = 'No'
-                            DD_update['Reason change not made'][index] = 'No Logical Reason'
-                            print('OK')
+                            elif (schedule.split(' - ')[0] != new_start_date):
+                                DD_update['Change made in Connect?'][index] = 'No'
+                                DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                print('OK')
 
             elif Catalog_active_button == 'NOT FOUND':
                 print('Active Catalog Button not found')
@@ -712,16 +715,17 @@ def check_end_date(row, index, previous_school, previous_catalog, DD_update, dri
                                                                                                  department_name=department_name,
                                                                                                  course_number=course_number,
                                                                                                  section_code=section_code)
+                                if (schedule != None):
 
-                                if (schedule.split(' - ')[1] == new_end_date):
-                                    DD_update['Change made in Connect?'][index] = 'Yes'
-                                    DD_update['Reason change not made'][index] = 'No Logical Reason'
-                                    print('OK')
+                                    if (schedule.split(' - ')[1] == new_end_date):
+                                        DD_update['Change made in Connect?'][index] = 'Yes'
+                                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                        print('OK')
 
-                                elif (schedule != None) & (schedule.split(' - ')[1] != new_end_date):
-                                    DD_update['Change made in Connect?'][index] = 'No'
-                                    DD_update['Reason change not made'][index] = 'After Catalog Activation'
-                                    print('OK')
+                                    elif (schedule.split(' - ')[1] != new_end_date):
+                                        DD_update['Change made in Connect?'][index] = 'No'
+                                        DD_update['Reason change not made'][index] = 'After Catalog Activation'
+                                        print('OK')
 
                     # Si estoy despues del invoice:
                     # Chequear start y end date del item
@@ -737,16 +741,17 @@ def check_end_date(row, index, previous_school, previous_catalog, DD_update, dri
                                                                                                  department_name=department_name,
                                                                                                  course_number=course_number,
                                                                                                  section_code=section_code)
+                                if (schedule != None):
 
-                                if (schedule.split(' - ')[1] == new_end_date):
-                                    DD_update['Change made in Connect?'][index] = 'Yes'
-                                    DD_update['Reason change not made'][index] = 'No Logical Reason'
-                                    print('OK')
+                                    if (schedule.split(' - ')[1] == new_end_date):
+                                        DD_update['Change made in Connect?'][index] = 'Yes'
+                                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                        print('OK')
 
-                                elif (schedule != None) & (schedule.split(' - ')[1] != new_end_date):
-                                    DD_update['Change made in Connect?'][index] = 'No Expected Change'
-                                    DD_update['Reason change not made'][index] = 'After Invoice'
-                                    print('OK')
+                                    elif (schedule.split(' - ')[1] != new_end_date):
+                                        DD_update['Change made in Connect?'][index] = 'No Expected Change'
+                                        DD_update['Reason change not made'][index] = 'After Invoice'
+                                        print('OK')
                 else:
                     print('Could not check invoice date')
 
@@ -763,15 +768,16 @@ def check_end_date(row, index, previous_school, previous_catalog, DD_update, dri
                                                                                          department_name=department_name,
                                                                                          course_number=course_number,
                                                                                          section_code=section_code)
+                        if (schedule != None):
 
-                        if (schedule.split(' - ')[1] == new_end_date):
-                            DD_update['Change made in Connect?'][index] = 'Yes'
-                            print('OK')
+                            if (schedule.split(' - ')[1] == new_end_date):
+                                DD_update['Change made in Connect?'][index] = 'Yes'
+                                print('OK')
 
-                        elif (schedule != None) & (schedule.split(' - ')[1] != new_end_date):
-                            DD_update['Change made in Connect?'][index] = 'No'
-                            DD_update['Reason change not made'][index] = 'No Logical Reason'
-                            print('OK')
+                            elif (schedule.split(' - ')[1] != new_end_date):
+                                DD_update['Change made in Connect?'][index] = 'No'
+                                DD_update['Reason change not made'][index] = 'No Logical Reason'
+                                print('OK')
 
             elif Catalog_active_button == 'NOT FOUND':
                 print('Active Catalog Button not found')
