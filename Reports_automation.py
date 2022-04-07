@@ -175,6 +175,7 @@ def ask_if_got_reports(reports_folder_path):
 def compare_reports(DD_update, reports_folder_path):
     Reports = ask_if_got_reports(reports_folder_path=reports_folder_path)
     if type(Reports) != bool:
+        print('Running Reports comparison')
         DD_Report_cases = DD_update.loc[(DD_update['Change made in Connect?'] == 'Report') &
                                         (DD_update['Type of Change'] != 'new enrollment') &
                                         (DD_update['Type of Change'] != 'deactivated enrollment') &

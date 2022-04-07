@@ -297,15 +297,15 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
             # Find department and course
             WebDriverWait(driver, 2).until(
                 EC.visibility_of_all_elements_located((
-                    By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+                    By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
             WebDriverWait(driver, 2).until(EC.element_to_be_clickable((
-                By.XPATH, '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+                By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
             h3s = driver.find_elements(By.XPATH,
-                                       '//h3[text()= "{}"]'.format(' '.join([department_name, course_number])))
+                                       '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))
             if len(h3s):
                 print('Course found')
                 for h3 in h3s:
-                    div_course = h3.find_element(By.XPATH, '..')
+                    div_course = h3.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                     try:
                         # Find section within dpt and course
                         WebDriverWait(driver, 2).until(

@@ -25,6 +25,13 @@ def download_files(sort_date=False):
     print('Processed Open')
     time.sleep(20)
 
+    pyautogui.click(100, 175)
+    time.sleep(1)
+    pyautogui.click(1785, 175)
+    time.sleep(1)
+    pyautogui.click(1785, 175)
+    time.sleep(1)
+
     if sort_date:
         pyautogui.click(1785, 175)
         time.sleep(1)
