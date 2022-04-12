@@ -364,16 +364,28 @@ def verba_price(driver):
         WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, pricing_xpath)))
         WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, pricing_xpath))).click()
 
-        net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
-        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
-        net_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[1]
+        try:
+            net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+            net_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[1]
+            net_price = float(net_price)
+        except:
+            net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2] / div / input'
+            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+            net_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).get_attribute('value')
+            net_price = float(net_price)
 
         student_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[1] / div / div / h3 / span'
         WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, student_price_xpath)))
         student_price = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, student_price_xpath))).text.split('$')[1]
-        Price_checked = True
+
+        print('Net Price: {}\n'
+              'Student Price: {}'.format(float(net_price), float(student_price)))
         print('Price checked correctly')
+        Price_checked = True
+
         return Price_checked, float(net_price), float(student_price)
+
     except:
         time.sleep(2)
         try:
@@ -381,24 +393,39 @@ def verba_price(driver):
             WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, pricing_xpath)))
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, pricing_xpath))).click()
 
-            net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
-            WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
-            net_price = \
-            WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[1]
+            try:
+                net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2]'
+                WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+                net_price = \
+                WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, net_price_xpath))).text.split('$')[
+                    1]
+                net_price = float(net_price)
+            except:
+                net_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[2] / div[1] / div[2] / div / input'
+                WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, net_price_xpath)))
+                net_price = WebDriverWait(driver, 5).until(
+                    EC.element_to_be_clickable((By.XPATH, net_price_xpath))).get_attribute('value')
+                net_price = float(net_price)
 
             student_price_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div[1] / div / div / h3 / span'
             WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, student_price_xpath)))
             student_price = \
             WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, student_price_xpath))).text.split('$')[
                 1]
+
+            print('Net Price: {}\n'
+                  'Student Price: {}'.format(float(net_price), float(student_price)))
             Price_checked = True
             print('Price checked correctly')
+
             return Price_checked, float(net_price), float(student_price)
+
         except:
+            Price_checked = False
             print('Could not get prices')
             driver.refresh()
             time.sleep(3)
-    return Price_checked, net_price, student_price
+            return Price_checked, net_price, student_price
 
 
 def verba_dashboard_schedule(driver, start_date, end_date):

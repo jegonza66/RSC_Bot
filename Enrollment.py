@@ -29,11 +29,11 @@ def load_files(enrollment_files_path):
         Enrollment_new_path = list(compress(enrollment_files_path, new_index))[0]
 
     print('Loading OLD enrollment file...')
-    Old_en_file = pd.read_csv(Enrollment_old_path)
+    Old_en_file = pd.read_csv(Enrollment_old_path, keep_default_na=False)
     print('Done')
 
     print('Loading NEW enrollment file...')
-    New_en_file = pd.read_csv(Enrollment_new_path)
+    New_en_file = pd.read_csv(Enrollment_new_path, keep_default_na=False)
     print('Done')
 
     return Old_en_file, New_en_file

@@ -33,11 +33,11 @@ def load_files(adoption_files_path):
         Adoption_new_path = list(compress(adoption_files_path, new_index))[0]
 
     print('Loading Old adoption file...')
-    Old_ad_file = pd.read_csv(Adoption_old_path)
+    Old_ad_file = pd.read_csv(Adoption_old_path, keep_default_na=False)
     print('Done')
 
     print('Loading new adoption file...')
-    New_ad_file = pd.read_csv(Adoption_new_path)
+    New_ad_file = pd.read_csv(Adoption_new_path, keep_default_na=False)
     print('Done')
 
     New_ad_file['section_code_DD'] = New_ad_file['section_code'].str.replace(r'^(0+)', '', regex=True)

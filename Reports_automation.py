@@ -152,7 +152,8 @@ def ask_if_got_reports(reports_folder_path):
                 reports_folder_path = filedialog.askdirectory()
 
             all_filenames = [i.replace('\\', '/') for i in glob.glob(os.path.join(reports_folder_path, '*.xlsx'))]
-            Reports = pd.concat([pd.read_excel(f, sheet_name='Detail of Items with Sections', dtype='object') for f in all_filenames])
+            Reports = pd.concat([pd.read_excel(f, sheet_name='Detail of Items with Sections', dtype='object',
+                                               keep_default_na=False) for f in all_filenames])
 
             #Add new columns to Report
             Reports['catalog'] = Reports['Catalog Name/Term Name'].map(str) + '/-/' + Reports['Connect User'].map(str)
