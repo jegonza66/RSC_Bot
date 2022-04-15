@@ -120,6 +120,7 @@ def get_reports(driver, DD_update):
     DD_update = DD_update_drop_schools_catalogs_report(schools_catalogs_report=schools_catalogs_report, DD_update=DD_update)
 
     if schools_catalogs_report != {}:
+        reports_folder_path = ''
         Answer = input('\nDid you recieved the reports on your email?\n'
                        'Please answer "yes" or "no":')
         yes = {'yes', 'y', 'ye'}

@@ -57,7 +57,6 @@ def download_files(sort_date=False):
     print('Cyberduck Closed')
 
 
-
 def extract_move_files():
 
     # Get downloaded files
@@ -66,21 +65,8 @@ def extract_move_files():
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
-
-    if len(files) != 2:
-        # Delete incorrect files
-        for file in files:
-            os.remove(file)
-
-        # Download files sorting by date
-        download_files(sort_date=True)
-
-        # Get downloaded files
-        file_date = datetime.today().date().strftime('%Y%m%d')
-        downloads_dir = 'C:/Users/joaco/Downloads'
-        os.chdir(downloads_dir)
-        files = filter(os.path.isfile, os.listdir(downloads_dir))
-        files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
+    # get unique files
+    files = list(set(files))
 
     # Extract gz downloads
     for file in files:
@@ -94,12 +80,13 @@ def extract_move_files():
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f and 'gz' not in f] # add path to each file
-    # files.sort(key=lambda x: os.path.getmtime(x))
-    # files = files[-2:]
 
     # Move files to adoptions and enrollments folder
     for file in files:
-        shutil.move(file, r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files')
+        try:
+            shutil.move(file, r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files')
+        except:
+            pass
 
 def get_new_old_files():
     try:

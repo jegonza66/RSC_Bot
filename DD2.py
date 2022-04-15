@@ -2,6 +2,9 @@ import Chrome_navigator
 from datetime import datetime
 import time
 import pandas as pd
+import sys
+
+import Functions
 
 
 def check_new_section(row, index, previous_school, previous_catalog, DD_update, driver):
@@ -850,7 +853,7 @@ def check_change(row, index, previous_school, previous_catalog, DD_update, drive
     return DD_update, previous_school, previous_catalog
 
 
-def run(DD_update, driver, total_count=5):
+def run(Credentials, DD_update, driver, total_count=5):
 
     # Define run parameters
     count = 0
@@ -873,6 +876,9 @@ def run(DD_update, driver, total_count=5):
             skip = (type(row['Change made in Connect?']) == str) or (row['Type of Change'] == 'new enrollment') or \
                    (row['Type of Change'] == 'deactivated enrollment') or (row['Type of Change'] == 'new schedule')
             if not skip:
+                # Save console prints to Reports file
+                sys.stdout = Functions.Logger(Credentials)
+
                 case += 1
                 print('\nCase {} of {}\nTime elapsed: {}'.format(case, missing_rows,
                                                                   str(datetime.now() - startTime).split('.')[0]))
@@ -880,6 +886,12 @@ def run(DD_update, driver, total_count=5):
                                                                             previous_school=previous_school,
                                                                             previous_catalog=previous_catalog,
                                                                             DD_update=DD_update, driver=driver)
+
+                print('Change made in Connect?: {}'.format(DD_update.iloc[index]['Change made in Connect?']))
+                print('Reason change not made: {}'.format(DD_update.iloc[index]['Reason change not made']))
+
+                # Save Report File
+                sys.stdout.close()
 
         missing_rows = DD_update['Change made in Connect?'].isna().sum() - \
                        len(DD_update.loc[(DD_update['Type of Change'] == 'new enrollment') &
@@ -890,13 +902,18 @@ def run(DD_update, driver, total_count=5):
                                          (DD_update['Change made in Connect?'] != 'Report')])
         count += 1
         if missing_rows:
+            # Save console prints to Reports file
+            sys.stdout = Functions.Logger(Credentials)
+
             print('\n{}. Waiting to re-run on {} unchecked cases...'.format(count, missing_rows))
-            # driver.refresh()
-            # time.sleep(5)
             driver.back()
             time.sleep(5)
             previous_school = ''
             previous_catalog = ''
-    print('\nTotal run time: {}'.format(str(datetime.now() - startTime).split('.')[0]))
+            sys.stdout.close()
 
+    sys.stdout = Functions.Logger(Credentials)
+    print('\nTotal run time: {}'.format(str(datetime.now() - startTime).split('.')[0]))
+    sys.stdout.close()
     return DD_update
+

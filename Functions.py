@@ -2,6 +2,9 @@ import pandas as pd
 import os
 import time
 from datetime import datetime, timedelta
+import sys
+
+import Cyberduck
 
 def make_full_df(df):
 
@@ -37,7 +40,6 @@ def seasons_of_date(date):
 
 
 def save_DD1(DD_update, Credentials, date):
-    # DD1_Save = DD_update.loc[:, ~DD_update.columns.str.startswith('Extra')]
     DD1_Save = DD_update.sort_values(['Type of Change', 'School', 'Catalog']).reset_index(drop=True)
 
     path_1 = Credentials['csv_save_path'] + 'DD1/'
@@ -46,8 +48,8 @@ def save_DD1(DD_update, Credentials, date):
     DD1_Save.to_excel(file_name, index=False)
     print('\nDD1_update {} file saved to {}'.format(date, path_1))
 
+
 def save_DD2(DD_update, Credentials, date):
-    # DD2_Save = DD_update.loc[:, ~DD_update.columns.str.startswith('Extra')]
     DD2_Save = DD_update.sort_values(['Type of Change', 'School', 'Catalog']).reset_index(drop=True)
     path_2 = Credentials['csv_save_path'] + 'DD2/'
     os.makedirs(path_2, exist_ok=True)
@@ -77,3 +79,42 @@ def wait_slurpee(DD_update):
         print('Waiting until {} for Slurpee to finish changes before checking...'.format(format(datetime.now() + timedelta(hours=hours),
                                                                                             '%H:%M:%S')))
     time.sleep(3600 * hours)
+
+
+class Logger(object):
+    def __init__(self, Credentials):
+        save_path = Credentials['csv_save_path'] + 'Reports/'
+        os.makedirs(save_path, exist_ok=True)
+        file_name = time.strftime(save_path + 'Report %Y_%m_%d.log')
+
+        self.terminal = sys.stdout
+        self.log = open(file_name, "a")
+
+    def write(self, message):
+        self.terminal.write(message)
+        self.log.write(message)
+
+    def flush(self):
+        # this flush method is needed for python 3 compatibility.
+        # this handles the flush command by doing nothing.
+        # you might want to specify some extra behavior here.
+        pass
+
+    def close(self):
+        self.log.close()
+        sys.stdout = sys.stdout.terminal
+
+
+def get_files(Credentials):
+    # Ask if automatically download files from cyberduck
+    if Credentials['Verba_Username'] == 'joaquin.gonzalez':
+        auto_cyberduck_download = input('Would you like to automatically download the files from cyberduck?')
+        yes = {'yes', 'y', 'ye'}
+        if auto_cyberduck_download in yes:
+            # Download adoption and enrollment files
+            adoption_files_path, enrollment_files_path = Cyberduck.get_new_old_files()
+        else:
+            adoption_files_path, enrollment_files_path = None, None
+    else:
+        adoption_files_path, enrollment_files_path = None, None
+    return adoption_files_path, enrollment_files_path
