@@ -134,7 +134,7 @@ def BNED_DD2(DD_update, date):
 
     # Save DD2_update file without report cases
     sys.stdout = Functions.Logger(Credentials)
-    Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
+    # Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
 
     # Re check "No logical reason cases"
     print('No Logical Reason Cases: {}\n'
