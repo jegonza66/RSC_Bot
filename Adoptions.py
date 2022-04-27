@@ -251,12 +251,20 @@ def compare_make_DD_update(Old_ad_file, New_ad_file):
     opt_out_df['Type of Change'] = 'participation model change'
 
     # Make matching supercourses files for net price comparison
-    matching_supercourse_index_old = Old_ad_file['supercourse'].isin(New_ad_file['supercourse'])
-    matching_supercourse_index_new = New_ad_file['supercourse'].isin(Old_ad_file['supercourse'])
+    matching_supercourse_index_old = Old_ad_file['supercourse'].isin(New_ad_file['supercourse']).reset_index(
+        drop=True)
+    matching_supercourse_index_new = New_ad_file['supercourse'].isin(Old_ad_file['supercourse']).reset_index(
+        drop=True)
     Matching_Old_ad_file = Old_ad_file.loc[matching_supercourse_index_old].fillna('').sort_values('supercourse').reset_index(
         drop=True)
     Matching_New_ad_file = New_ad_file.loc[matching_supercourse_index_new].fillna('').sort_values('supercourse').reset_index(
         drop=True)
+
+    # EXTRA
+    # Old_supercourse_dup = ~Old_ad_file['supercourse'].duplicated()
+    # New_supercourse_dup = ~New_ad_file['supercourse'].duplicated()
+    # Matching_Old_ad_file = Matching_Old_ad_file.drop_duplicates('supercourse').reset_index(drop=True)
+    # Matching_New_ad_file = Matching_New_ad_file.drop_duplicates('supercourse').reset_index(drop=True)
 
     # Net Price
     net_price_change_index = ~(Matching_Old_ad_file['net_price'] == Matching_New_ad_file['net_price'])

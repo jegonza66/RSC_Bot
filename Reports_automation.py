@@ -21,7 +21,7 @@ def ask_if_leave_out(DD_update):
                                                              (DD_update['Type of Change'] != 'new enrollment') &
                                                              (DD_update['Type of Change'] != 'deactivated enrollment') &
                                                              (DD_update['Type of Change'] != 'new schedule')]),
-                                           ' - '.join([School, Catalog])))
+                                           ' - '.join([str(School), str(Catalog)])))
     schools_catalogs_cases = list(dict.fromkeys(schools_catalogs_cases))
     schools_catalogs_cases.sort(reverse=True)
 
