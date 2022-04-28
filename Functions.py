@@ -3,6 +3,7 @@ import os
 import time
 from datetime import datetime, timedelta
 import sys
+from func_timeout import FunctionTimedOut, func_timeout
 
 import Cyberduck
 
@@ -69,15 +70,19 @@ def wait_slurpee(DD_update):
     hours = False
     while type(hours) != float:
         try:
-            hours = float(input('There are {} cases to be checked.\n'
+            # Ask how much time to wait for slurpee. If no answer in five minutes wait 3 hs.
+            try:
+                hours = func_timeout(5 * 60, lambda: float(input('There are {} cases to be checked.\n'
                                 'How much time (hours) would you like to wait before running the online check?'
                                 '(so Slurpee can complete the changes).\n'
-                                'Hours:'.format(missing_rows)))
+                                'Hours:'.format(missing_rows))))
+            except FunctionTimedOut:
+                hours = float(3)
         except ValueError:
             print("That's not an number!")
     if hours:
-        print('Waiting until {} for Slurpee to finish changes before checking...'.format(format(datetime.now() + timedelta(hours=hours),
-                                                                                            '%H:%M:%S')))
+        print('Waiting until {} for Slurpee to finish changes before checking...'.
+              format(format(datetime.now() + timedelta(hours=hours), '%H:%M:%S')))
     time.sleep(3600 * hours)
 
 

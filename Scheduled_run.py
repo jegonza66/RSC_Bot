@@ -44,14 +44,14 @@ def BNED_DD():
     # Ask for schools and catalogs to leave out of online check and get report
     DD_update, schools_catalogs_report, reports_folder_path = Reports_automation.get_reports(driver=driver, DD_update=DD_update)
 
+    # Lock screen
+    subprocess.call(cmd)
+
     # Wait for Slurpee to finish before checking
     Functions.wait_slurpee(DD_update=DD_update)
 
     # Save Report File
     sys.stdout.close()
-
-    # Lock screen
-    subprocess.call(cmd)
 
     # DD2: Validate changes in Connect
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
@@ -84,8 +84,9 @@ def BNED_DD():
     # Save Report File
     sys.stdout.close()
 
-    # time.sleep(60)
-    # os.system("shutdown.exe /h")
+    # Hibernate after 5 minutes
+    time.sleep(5 * 60)
+    os.system("shutdown.exe /h")
 
 
 def BNED_DD1():
@@ -168,8 +169,7 @@ def BNED_DD1():
 #     # Save Report File
 #     sys.stdout.close()
 
-full_run = False
-DD1_run = True
+full_run = True
 
 if full_run:
     schedule.every().monday.at("03:00").do(BNED_DD)
@@ -178,7 +178,7 @@ if full_run:
     schedule.every().thursday.at("03:00").do(BNED_DD)
     schedule.every().friday.at("03:00").do(BNED_DD)
 
-elif DD1_run:
+else:
     schedule.every().monday.at("03:00").do(BNED_DD1)
     schedule.every().tuesday.at("03:00").do(BNED_DD1)
     schedule.every().wednesday.at("03:00").do(BNED_DD1)

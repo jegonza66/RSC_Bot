@@ -3,12 +3,11 @@ import os
 import tkinter as tk
 from tkinter import filedialog
 import pandas as pd
+from func_timeout import FunctionTimedOut, func_timeout
 
 import Chrome_navigator
 
-
 def ask_if_leave_out(DD_update):
-
     # sort schools by cases number (considering only cases to do (not "No expected change" or enrollments/schedules)
     Schools = DD_update['Extra_id'].drop_duplicates()
     schools_catalogs_cases = []
@@ -33,8 +32,13 @@ def ask_if_leave_out(DD_update):
     print('\nTotal number of cases: {}\n'
           '{}'.format(missing_rows, '\n'.join(str(line) for line in schools_catalogs_cases)))
 
-    Answer = input('\nWould you like to exclude any Schools and Catalogs from the online check?\n'
-                      'Please answer "yes" or "no":')
+    # Ask if want to get reports for certain catalogs. If no answer in five minutes Answer is no.
+    try:
+        Answer = func_timeout(5 * 60, lambda: input('\nWould you like to exclude any Schools and Catalogs from the online check?\n'
+                          'Please answer "yes" or "no":'))
+    except FunctionTimedOut:
+        print('no')
+        Answer = 'no'
 
     schools_catalogs_report = {}
     empty = {'', ' '}
@@ -51,12 +55,10 @@ def ask_if_leave_out(DD_update):
                 schools_catalogs_report[School] = [Catalog]
             else:
                 schools_catalogs_report[School].append(Catalog)
-
     return schools_catalogs_report
 
 
 def request_reports(schools_catalogs_report, driver, DD_update):
-
     Schools = schools_catalogs_report.keys()
     for School in Schools:
         print('\n{}'.format(School))
