@@ -5,7 +5,13 @@ import gzip
 import shutil
 from datetime import datetime
 
+
 def download_files(sort_date=False):
+    # Wake screen
+    pyautogui.click(900, 500)
+    print('Wake screen')
+    time.sleep(2)
+
     os.system('start explorer shell:appsfolder\iterate.Cyberduck')
     print('Cyberduck Open')
     time.sleep(20)

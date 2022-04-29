@@ -172,18 +172,18 @@ def BNED_DD1():
 full_run = True
 
 if full_run:
-    schedule.every().monday.at("03:00").do(BNED_DD)
-    schedule.every().tuesday.at("03:00").do(BNED_DD)
-    schedule.every().wednesday.at("03:00").do(BNED_DD)
-    schedule.every().thursday.at("03:00").do(BNED_DD)
-    schedule.every().friday.at("03:00").do(BNED_DD)
+    schedule.every().monday.at("02:35").do(BNED_DD)
+    schedule.every().tuesday.at("02:35").do(BNED_DD)
+    schedule.every().wednesday.at("02:35").do(BNED_DD)
+    schedule.every().thursday.at("02:35").do(BNED_DD)
+    schedule.every().friday.at("02:35").do(BNED_DD)
 
 else:
-    schedule.every().monday.at("03:00").do(BNED_DD1)
-    schedule.every().tuesday.at("03:00").do(BNED_DD1)
-    schedule.every().wednesday.at("03:00").do(BNED_DD1)
-    schedule.every().thursday.at("03:00").do(BNED_DD1)
-    schedule.every().friday.at("03:00").do(BNED_DD1)
+    schedule.every().monday.at("02:35").do(BNED_DD1)
+    schedule.every().tuesday.at("02:35").do(BNED_DD1)
+    schedule.every().wednesday.at("02:35").do(BNED_DD1)
+    schedule.every().thursday.at("02:35").do(BNED_DD1)
+    schedule.every().friday.at("02:35").do(BNED_DD1)
 
 while True:
     out = schedule.run_pending()
