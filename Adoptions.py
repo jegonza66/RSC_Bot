@@ -255,9 +255,11 @@ def compare_make_DD_update(Old_ad_file, New_ad_file):
         drop=True)
     matching_supercourse_index_new = New_ad_file['supercourse'].isin(Old_ad_file['supercourse']).reset_index(
         drop=True)
-    Matching_Old_ad_file = Old_ad_file.loc[matching_supercourse_index_old].fillna('').sort_values('supercourse').reset_index(
+    Matching_Old_ad_file = Old_ad_file.loc[matching_supercourse_index_old].fillna('').drop_duplicates('supercourse').\
+        sort_values('supercourse').reset_index(
         drop=True)
-    Matching_New_ad_file = New_ad_file.loc[matching_supercourse_index_new].fillna('').sort_values('supercourse').reset_index(
+    Matching_New_ad_file = New_ad_file.loc[matching_supercourse_index_new].fillna('').drop_duplicates('supercourse').\
+        sort_values('supercourse').reset_index(
         drop=True)
 
     # EXTRA
