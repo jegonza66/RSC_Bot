@@ -262,11 +262,6 @@ def compare_make_DD_update(Old_ad_file, New_ad_file):
         sort_values('supercourse').reset_index(
         drop=True)
 
-    # EXTRA
-    # Old_supercourse_dup = ~Old_ad_file['supercourse'].duplicated()
-    # New_supercourse_dup = ~New_ad_file['supercourse'].duplicated()
-    # Matching_Old_ad_file = Matching_Old_ad_file.drop_duplicates('supercourse').reset_index(drop=True)
-    # Matching_New_ad_file = Matching_New_ad_file.drop_duplicates('supercourse').reset_index(drop=True)
 
     # Net Price
     net_price_change_index = ~(Matching_Old_ad_file['net_price'] == Matching_New_ad_file['net_price'])
