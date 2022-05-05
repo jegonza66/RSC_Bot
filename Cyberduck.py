@@ -6,7 +6,7 @@ import shutil
 from datetime import datetime
 
 
-def download_files(sort_date=False):
+def download_files():
     # Wake screen
     pyautogui.click(900, 500)
     print('Wake screen')
@@ -37,15 +37,7 @@ def download_files(sort_date=False):
     time.sleep(1)
     pyautogui.click(1785, 175)
     time.sleep(1)
-
-    if sort_date:
-        pyautogui.click(100, 175)
-        time.sleep(1)
-        pyautogui.click(1785, 175)
-        time.sleep(1)
-        pyautogui.click(1785, 175)
-        print('Sorted by Modified')
-        time.sleep(1)
+    print('Sorted by Modified')
 
     # Download enrollment
     pyautogui.doubleClick(62, 208)

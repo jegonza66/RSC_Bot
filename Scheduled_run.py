@@ -110,8 +110,8 @@ def BNED_DD1():
     # Save Report File
     sys.stdout.close()
 
-    time.sleep(5*60)
-    os.system("shutdown.exe /h")
+    # time.sleep(5*60)
+    # os.system("shutdown.exe /h")
 
     return DD_update, date
 
