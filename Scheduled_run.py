@@ -27,6 +27,9 @@ def BNED_DD():
     # Download adoption and enrollment files
     adoption_files_path, enrollment_files_path = Cyberduck.get_new_old_files()
 
+    # Lock screen
+    subprocess.call(cmd)
+
     # DD1: adoptions and enrollments file comparison
     Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,
                                                         enrollment_files_path=enrollment_files_path,
@@ -43,9 +46,6 @@ def BNED_DD():
 
     # Ask for schools and catalogs to leave out of online check and get report
     DD_update, schools_catalogs_report, reports_folder_path = Reports_automation.get_reports(driver=driver, DD_update=DD_update)
-
-    # Lock screen
-    subprocess.call(cmd)
 
     # Wait for Slurpee to finish before checking
     Functions.wait_slurpee(DD_update=DD_update)
@@ -110,8 +110,8 @@ def BNED_DD1():
     # Save Report File
     sys.stdout.close()
 
-    # time.sleep(5*60)
-    # os.system("shutdown.exe /h")
+    time.sleep(5*60)
+    os.system("shutdown.exe /h")
 
     return DD_update, date
 
