@@ -269,7 +269,7 @@ def check_upd_item(row, index, previous_school, previous_catalog, DD_update, dri
             print('Checking if old sku is Inactive')
             Items_Menu_Open = Chrome_navigator.verba_open_item_menu(driver=driver)
             if Items_Menu_Open:
-                Item_Open = Chrome_navigator.verba_open_item(driver=driver, sku=sku)
+                Item_Open = Chrome_navigator.verba_open_item(driver=driver, sku=old_sku)
                 if Item_Open:
                     Old_Course_Active, old_schedule = Chrome_navigator.verba_active_schedule(driver=driver,
                                                                                              department_name=department_name,
@@ -810,7 +810,7 @@ def check_change(row, index, previous_school, previous_catalog, DD_update, drive
 
     elif row['Type of Change'] == 'updated item':
 
-        DD_update, previous_school, previous_catalog = check_add_item \
+        DD_update, previous_school, previous_catalog = check_upd_item \
             (row=row, index=index, previous_school=previous_school, previous_catalog=previous_catalog,
              DD_update=DD_update, driver=driver)
 

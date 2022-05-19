@@ -7,8 +7,11 @@ from datetime import datetime
 
 
 def download_files():
+    # Get screen resolution
+    width, height = pyautogui.size()
+
     # Wake screen
-    pyautogui.click(900, 500)
+    pyautogui.click(width/2, height/2)
     print('Wake screen')
     time.sleep(2)
 
@@ -17,41 +20,41 @@ def download_files():
     time.sleep(20)
 
     # Open bned
-    pyautogui.doubleClick(125, 200)
+    pyautogui.doubleClick(125 / 1920 * width, 200 / 1080 * height)
     print('BNED Open')
     time.sleep(7)
 
     # Open files
-    pyautogui.doubleClick(62, 208)
+    pyautogui.doubleClick(62 / 1920 * width, 208 / 1080 * height)
     print('Files Open')
     time.sleep(5)
 
     # Open processed
-    pyautogui.doubleClick(62, 208)
+    pyautogui.doubleClick(62 / 1920 * width, 208 / 1080 * height)
     print('Processed Open')
     time.sleep(20)
 
-    pyautogui.click(100, 175)
+    pyautogui.click(100 / 1920 * width, 175 / 1080 * height)
     time.sleep(1)
-    pyautogui.click(1785, 175)
+    pyautogui.click(1785 / 1920 * width, 175 / 1080 * height)
     time.sleep(1)
-    pyautogui.click(1785, 175)
+    pyautogui.click(1785 / 1920 * width, 175 / 1080 * height)
     time.sleep(1)
     print('Sorted by Modified')
 
     # Download enrollment
-    pyautogui.doubleClick(62, 208)
+    pyautogui.doubleClick(62 / 1920 * width, 208 / 1080 * height)
     print('Downloading enrollment')
     time.sleep(2)
     # Download adoption
-    pyautogui.doubleClick(62, 228)
+    pyautogui.doubleClick(62 / 1920 * width, 228 / 1080 * height)
     print('Downloading adoption')
     time.sleep(60 * 1)
 
     # Close Cyberduck
-    pyautogui.click(1888, 22)
+    pyautogui.click(1888 / 1920 * width, 22 / 1080 * height)
     time.sleep(1)
-    pyautogui.click(800, 574)
+    pyautogui.click(800 / 1920 * width, 574 / 1080 * height)
     print('Cyberduck Closed')
 
 
