@@ -22,7 +22,7 @@ def ask_if_leave_out(DD_update):
                                                              (DD_update['Type of Change'] != 'new schedule')]),
                                            ' - '.join([str(School), str(Catalog)])))
     schools_catalogs_cases = list(dict.fromkeys(schools_catalogs_cases))
-    schools_catalogs_cases.sort(reverse=True)
+    schools_catalogs_cases.sort(reverse=False)
 
     missing_rows = DD_update['Change made in Connect?'].isna().sum() - \
                    (DD_update['Type of Change'] == 'new enrollment').sum() - \
@@ -30,7 +30,8 @@ def ask_if_leave_out(DD_update):
                    (DD_update['Type of Change'] == 'new schedule').sum()
 
     print('\nTotal number of cases: {}\n'
-          '{}'.format(missing_rows, '\n'.join(str(line) for line in schools_catalogs_cases)))
+          'Number of cases to be checked: {}\n'
+          '{}'.format(len(DD_update), missing_rows, '\n'.join(str(line) for line in schools_catalogs_cases)))
 
     # Ask if want to get reports for certain catalogs. If no answer in five minutes Answer is no.
     try:

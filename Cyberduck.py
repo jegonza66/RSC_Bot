@@ -63,6 +63,7 @@ def extract_move_files():
     # Get downloaded files
     file_date = datetime.today().date().strftime('%Y%m%d')
     downloads_dir = 'C:/Users/joaco/Downloads'
+    downloads_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files\Cyberduck'
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
@@ -77,8 +78,8 @@ def extract_move_files():
         os.remove(file)
 
     # get extracted files
-    downloads_dir = 'C:/Users/joaco/Downloads'
-    os.chdir(downloads_dir)
+    # downloads_dir = 'C:/Users/joaco/Downloads'
+    # os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f and 'gz' not in f] # add path to each file
 
