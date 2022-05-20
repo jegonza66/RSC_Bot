@@ -275,23 +275,32 @@ def check_upd_item(row, index, previous_school, previous_catalog, DD_update, dri
                                                                                              department_name=department_name,
                                                                                              course_number=course_number,
                                                                                              section_code=section_code)
-                    if (Old_Course_Active != 'Active') & (old_schedule == ' - '.join([start_date, end_date])):
+                    if (Old_Course_Active != 'Active'):
                         Old_file_OK = True
-
-                if Past_Invoice:
-                    DD_update['Change made in Connect?'][index] = 'No Expected Change'
-                    DD_update['Reason change not made'][index] = 'After Invoice'
-                    print('Past Invoice Date. Dismiss')
-                elif Past_Opt_Out:
-                    DD_update['Change made in Connect?'][index] = 'No'
-                    DD_update['Reason change not made'][index] = 'After Opt-Out Deadline'
-                    print('Past Opt Out Date. Change manually')
+                # If item not found, old sku is deactivated (ok)
+                else:
+                    Old_file_OK = True
 
                 if New_file_OK & Old_file_OK:
                     DD_update['Change made in Connect?'][index] = 'Yes'
                     if Past_Invoice or Past_Opt_Out:
                         DD_update['Reason change not made'][index] = 'No Logical Reason'
                     print('OK')
+
+                elif Past_Invoice:
+                    DD_update['Change made in Connect?'][index] = 'No Expected Change'
+                    DD_update['Reason change not made'][index] = 'After Invoice'
+                    print('Past Invoice Date. Dismiss')
+
+                elif Past_Opt_Out:
+                    DD_update['Change made in Connect?'][index] = 'No'
+                    DD_update['Reason change not made'][index] = 'After Opt-Out Deadline'
+                    print('Past Opt Out Date. Change manually')
+
+                else:
+                    DD_update['Change made in Connect?'][index] = 'No'
+                    DD_update['Reason change not made'][index] = 'No Logical Reason'
+                    print('Change not made. No Logical Reason')
 
     return DD_update, previous_school, previous_catalog
 
