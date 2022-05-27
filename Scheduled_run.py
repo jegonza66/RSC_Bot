@@ -25,7 +25,7 @@ def BNED_DD():
     sys.stdout = Functions.Logger(Credentials)
 
     # Download adoption and enrollment files
-    adoption_files_path, enrollment_files_path = Cyberduck.get_new_old_files()
+    adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
 
     # Lock screen
     subprocess.call(cmd)
@@ -81,6 +81,11 @@ def BNED_DD():
     sys.stdout = Functions.Logger(Credentials)
     # Save DD2_update final file (overwrites the first one)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
+
+    # print warning about downloaded files if necessary
+    if Warning:
+        print(Warning)
+        
     # Save Report File
     sys.stdout.close()
 
@@ -114,6 +119,30 @@ def BNED_DD1():
     os.system("shutdown.exe /h")
 
     return DD_update, date
+
+
+full_run = True
+DD1_run = False
+
+if full_run:
+    schedule.every().monday.at("02:35").do(BNED_DD)
+    schedule.every().tuesday.at("02:35").do(BNED_DD)
+    schedule.every().wednesday.at("02:35").do(BNED_DD)
+    schedule.every().thursday.at("02:35").do(BNED_DD)
+    schedule.every().friday.at("02:35").do(BNED_DD)
+
+elif DD1_run:
+    schedule.every().monday.at("02:35").do(BNED_DD1)
+    schedule.every().tuesday.at("02:35").do(BNED_DD1)
+    schedule.every().wednesday.at("02:35").do(BNED_DD1)
+    schedule.every().thursday.at("02:35").do(BNED_DD1)
+    schedule.every().friday.at("02:35").do(BNED_DD1)
+
+while True:
+    out = schedule.run_pending()
+    time.sleep(60*10)
+
+
 
 
 # def BNED_DD2(DD_update, date):
@@ -168,23 +197,3 @@ def BNED_DD1():
 #     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
 #     # Save Report File
 #     sys.stdout.close()
-
-full_run = True
-
-if full_run:
-    schedule.every().monday.at("02:35").do(BNED_DD)
-    schedule.every().tuesday.at("02:35").do(BNED_DD)
-    schedule.every().wednesday.at("02:35").do(BNED_DD)
-    schedule.every().thursday.at("02:35").do(BNED_DD)
-    schedule.every().friday.at("02:35").do(BNED_DD)
-
-else:
-    schedule.every().monday.at("02:35").do(BNED_DD1)
-    schedule.every().tuesday.at("02:35").do(BNED_DD1)
-    schedule.every().wednesday.at("02:35").do(BNED_DD1)
-    schedule.every().thursday.at("02:35").do(BNED_DD1)
-    schedule.every().friday.at("02:35").do(BNED_DD1)
-
-while True:
-    out = schedule.run_pending()
-    time.sleep(60*10)

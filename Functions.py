@@ -117,9 +117,9 @@ def get_files(Credentials):
         yes = {'yes', 'y', 'ye'}
         if auto_cyberduck_download in yes:
             # Download adoption and enrollment files
-            adoption_files_path, enrollment_files_path = Cyberduck.get_new_old_files()
+            adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
         else:
             adoption_files_path, enrollment_files_path = None, None
     else:
         adoption_files_path, enrollment_files_path = None, None
-    return adoption_files_path, enrollment_files_path
+    return adoption_files_path, enrollment_files_path, Warning

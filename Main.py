@@ -17,7 +17,7 @@ Credentials = Paths_Credentials.Verba_Credentials(Credentials)
 sys.stdout = Functions.Logger(Credentials)
 
 # Get Files
-adoption_files_path, enrollment_files_path = Functions.get_files(Credentials=Credentials)
+adoption_files_path, enrollment_files_path, Warning = Functions.get_files(Credentials=Credentials)
 
 # DD1: adoptions and enrollments file comparison
 Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,
@@ -70,5 +70,10 @@ DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
 sys.stdout = Functions.Logger(Credentials)
 # Save DD2_update final file (overwrites the other)
 Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
+
+# print warning about downloaded files if necessary
+if Warning:
+    print(Warning)
+
 # Save Report File
 sys.stdout.close()
