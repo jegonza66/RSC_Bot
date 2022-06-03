@@ -7,17 +7,18 @@ import Reports_automation
 
 import sys
 
+
 # Define DD_update file save path
 Credentials = Paths_Credentials.Path()
 
 # Get Verba Connect username and password
 Credentials = Paths_Credentials.Verba_Credentials(Credentials)
 
-# Save console prints to Reports file
-sys.stdout = Functions.Logger(Credentials)
-
 # Get Files
 adoption_files_path, enrollment_files_path, Warning = Functions.get_files(Credentials=Credentials)
+
+# Save console prints to Reports file
+sys.stdout = Functions.Logger(Credentials)
 
 # DD1: adoptions and enrollments file comparison
 Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,

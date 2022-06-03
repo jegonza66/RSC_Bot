@@ -111,6 +111,7 @@ class Logger(object):
 
 
 def get_files(Credentials):
+    Warning = False
     # Ask if automatically download files from cyberduck
     if Credentials['Verba_Username'] == 'joaquin.gonzalez':
         auto_cyberduck_download = input('Would you like to automatically download the files from cyberduck?')

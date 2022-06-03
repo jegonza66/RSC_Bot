@@ -6,9 +6,8 @@ import shutil
 from datetime import datetime
 import subprocess
 
-def download_files():
 
-    Downloaded_files = False
+def download_files():
     # Get screen resolution
     width, height = pyautogui.size()
 
@@ -63,18 +62,16 @@ def download_files():
     print('Cyberduck Closed')
 
     # Check downloaded files
+    file_date = datetime.today().date().strftime('%Y%m%d')
     downloads_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files\Cyberduck'
     os.chdir(downloads_dir)
     Downloaded_files = filter(os.path.isfile, os.listdir(downloads_dir))
-    Downloaded_files = [os.path.join(downloads_dir, f) for f in Downloaded_files]
+    Downloaded_files = [os.path.join(downloads_dir, f) for f in Downloaded_files if file_date in f]
 
     return Downloaded_files
 
 
 def extract_move_files():
-    Extracted_files = []
-    Moved_files = []
-
     # Get downloaded files
     file_date = datetime.today().date().strftime('%Y%m%d')
     downloads_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files\Cyberduck'
@@ -82,8 +79,6 @@ def extract_move_files():
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
-    # get unique files
-    files = list(set(files))
     print('Downloaded files:\n'
           '{}'.format('\n'.join(str(file) for file in files)))
 
@@ -101,6 +96,7 @@ def extract_move_files():
     Extracted_files = [os.path.join(downloads_dir, f) for f in Extracted_files if file_date in f and 'gz' not in f] # add path to each file
 
     # Move files to adoptions and enrollments folder
+    Moved_files = []
     print('Moving files to adoptions and enrollments folder.')
     for file in Extracted_files:
         try:
@@ -116,39 +112,44 @@ def extract_move_files():
             except:
                 pass
 
-    return Extracted_files, Moved_files
+    return Extracted_files, Moved_files, file_date
 
 
 def get_new_old_files():
     Warning = False
-    try:
-        count = 0
-        Downloaded_files = []
-        while len(Downloaded_files) != 2 and count < 3:
-            count += 1
-            Downloaded_files = download_files()
+    count = 0
+    Downloaded_files = download_files()
+    while len(Downloaded_files) != 2 and count < 2:
+        count += 1
+        print('Could not download files properly. Retrying...')
+        print('Downloaded files:\n'
+              '{}'.format('\n'.join(str(file) for file in Downloaded_files)))
+        Downloaded_files = download_files()
 
-        Extracted_files, Moved_files = extract_move_files()
+    Extracted_files, Moved_files, file_date = extract_move_files()
 
-        if len(Extracted_files) != 2 or len(Moved_files) != 2:
-            Warning = 'WARNING:\n' \
-                      'Extracted files:\n' \
-                      '{}\n' \
-                      'Moved files:\n' \
-                      '{}'.format('\n'.join(str(files) for files in Extracted_files), '\n'.join(str(files) for files in Moved_files))
+    if len(Extracted_files) != 2 or len(Moved_files) != 2:
+        Warning = 'WARNING:\n' \
+                  'Extracted files:\n' \
+                  '{}\n' \
+                  'Moved files:\n' \
+                  '{}'.format('\n'.join(str(files) for files in Extracted_files), '\n'.join(str(files) for files in Moved_files))
 
-        # get old and new files
-        Files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
-        os.chdir(Files_dir)
-        files = filter(os.path.isfile, os.listdir(Files_dir))
-        files = [os.path.join(Files_dir, f) for f in files] # add path to each file
-        files.sort(key=lambda x: os.path.getmtime(x))
-        files = files[-4:]
+    # get old and new files
+    Files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
+    os.chdir(Files_dir)
+    files = filter(os.path.isfile, os.listdir(Files_dir))
+    files = [os.path.join(Files_dir, f) for f in files] # add path to each file
+    files.sort(key=lambda x: os.path.getmtime(x))
+    files = files[-4:]
 
-        adoption_files_path = [file for file in files if 'adoption' in file]
-        enrollment_files_path = [file for file in files if 'enrollment' in file]
-    except:
-        print('Could not download files. Pleas download files manually.')
+    # Check that the new files are among the files
+    new_files_path = [file for file in files if file_date in file]
+    adoption_files_path = [file for file in files if 'adoption' in file]
+    enrollment_files_path = [file for file in files if 'enrollment' in file]
+
+    if len(new_files_path) != 2:
+        print('Did not get the new files correctly. You are gonna have to do it manually...')
         adoption_files_path, enrollment_files_path = None, None
 
     return adoption_files_path, enrollment_files_path, Warning
