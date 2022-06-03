@@ -25,8 +25,6 @@ def BNED_DD():
     # Download adoption and enrollment files
     adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
 
-    return
-
     # Lock screen
     print('Locking Screen')
     subprocess.call(cmd)
