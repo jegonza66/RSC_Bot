@@ -9,7 +9,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
 
 
-def verba_connect_login(Credentials):
+def verba_connect_attempt_login(Credentials):
     Verba_Username = Credentials['Verba_Username']
     Verba_Password = Credentials['Verba_Password']
 
@@ -34,16 +34,31 @@ def verba_connect_login(Credentials):
     # Click login
     login_button.click()
 
+    return driver
+
+def verba_connect_login(Credentials):
     # Check if successfull login
-    try:
-        time.sleep(2)
-        Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
-        WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
-    except:
+    Login = False
+    count = 0
+    total_count = 3
+    while not Login and count <= total_count:
+        count += 1
+        try:
+            driver = verba_connect_attempt_login(Credentials)
+            time.sleep(2)
+            Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+            WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+            driver.maximize_window()
+            Login = True
+        except:
+            if count < total_count:
+                driver.close()
+                time.sleep(60)
+    if not Login:
         input('\nVerification step needed to complete login.\n'
               'Please complete verification and press Enter to continue.')
-    driver.maximize_window()
+
     return driver
 
 
