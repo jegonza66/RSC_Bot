@@ -7,6 +7,7 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
+from func_timeout import FunctionTimedOut, func_timeout
 
 
 def verba_connect_attempt_login(Credentials):
@@ -43,18 +44,27 @@ def verba_connect_login(Credentials):
     total_count = 3
     while not Login and count <= total_count:
         count += 1
+        driver = verba_connect_attempt_login(Credentials)
+        Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
         try:
-            driver = verba_connect_attempt_login(Credentials)
             time.sleep(2)
-            Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
             WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
             driver.maximize_window()
             Login = True
         except:
-            if count < total_count:
-                driver.close()
-                time.sleep(60)
+            try:
+                func_timeout(2 * 60, lambda: input('\nVerification step needed to complete login.\n'
+                                                   'Please complete verification and press Enter to continue.'))
+                # Check if successful manual login
+                WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+                WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+                driver.maximize_window()
+                Login = True
+            except FunctionTimedOut:
+                if count < total_count:
+                    driver.close()
+                    time.sleep(60)
     if not Login:
         input('\nVerification step needed to complete login.\n'
               'Please complete verification and press Enter to continue.')
