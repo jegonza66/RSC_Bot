@@ -148,7 +148,7 @@ def get_new_old_files():
     adoption_files_path = [file for file in files if 'adoption' in file]
     enrollment_files_path = [file for file in files if 'enrollment' in file]
 
-    if len(new_files_path) != 2:
+    if len(new_files_path) != 2 or len(enrollment_files_path) != 2 or len(adoption_files_path) != 2:
         print('Did not get the new files correctly. You are gonna have to do it manually...')
         adoption_files_path, enrollment_files_path = None, None
 
