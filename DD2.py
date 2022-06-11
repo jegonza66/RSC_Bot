@@ -266,7 +266,7 @@ def check_upd_item(row, index, previous_school, previous_catalog, DD_update, dri
 
         # Check old item deactivated
         if Catalog_Selected:
-            print('Checking if old sku is Inactive')
+            print('Checking if old sku is Inactive: {}'.format(old_sku))
             Items_Menu_Open = Chrome_navigator.verba_open_item_menu(driver=driver)
             if Items_Menu_Open:
                 Item_Open = Chrome_navigator.verba_open_item(driver=driver, sku=old_sku)
@@ -283,9 +283,13 @@ def check_upd_item(row, index, previous_school, previous_catalog, DD_update, dri
 
                 if New_file_OK & Old_file_OK:
                     DD_update['Change made in Connect?'][index] = 'Yes'
-                    if Past_Invoice or Past_Opt_Out:
+                    print('Change made')
+                    if Past_Invoice:
                         DD_update['Reason change not made'][index] = 'No Logical Reason'
-                    print('OK')
+                        print('Past Invoice Date. No Logical Reason')
+                    elif Past_Opt_Out:
+                        DD_update['Reason change not made'][index] = 'No Logical Reason'
+                        print('Past Opt Out Date. No Logical Reason')
 
                 elif Past_Invoice:
                     DD_update['Change made in Connect?'][index] = 'No Expected Change'

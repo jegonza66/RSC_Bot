@@ -7,67 +7,45 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from datetime import datetime
-from func_timeout import FunctionTimedOut, func_timeout
 
 
-def verba_connect_attempt_login(Credentials):
+def verba_connect_login(Credentials):
     Verba_Username = Credentials['Verba_Username']
     Verba_Password = Credentials['Verba_Password']
 
-    # Login to Verba Connect
+    # Open driver
     driver = webdriver.Chrome(ChromeDriverManager().install())
+
     # Open the website
     driver.get('https://verbaconnect.com/auth/vst/login')
 
+    # Login to Verba Connect
     # Select the id box
-    id_box = driver.find_element(By.ID, 'username')
+    id_box = driver.find_element_by_id('username')
     # Send id information
     id_box.send_keys(Verba_Username)
 
     # Find password box
-    pass_box = driver.find_element(By.ID, 'password')
+    pass_box = driver.find_element_by_id('password')
     # Send password
     pass_box.send_keys(Verba_Password)
 
     # Find login button
     login_button_css = 'button[type="submit"]'
-    login_button = driver.find_element(By.CSS_SELECTOR, login_button_css)
+    login_button = driver.find_element_by_css_selector(login_button_css)
     # Click login
     login_button.click()
 
-    return driver
-
-def verba_connect_login(Credentials):
     # Check if successfull login
-    Login = False
-    count = 0
-    total_count = 3
-    while not Login and count <= total_count:
-        count += 1
-        driver = verba_connect_attempt_login(Credentials)
+    try:
         Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
-        try:
-            time.sleep(2)
-            WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
-            WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
-            driver.maximize_window()
-            Login = True
-        except:
-            try:
-                func_timeout(2 * 60, lambda: input('\nVerification step needed to complete login.\n'
-                                                   'Please complete verification and press Enter to continue.'))
-                # Check if successful manual login
-                WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
-                WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
-                driver.maximize_window()
-                Login = True
-            except FunctionTimedOut:
-                if count < total_count:
-                    driver.close()
-                    time.sleep(60)
-    if not Login:
+        WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+        time.sleep(2)
+        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+    except:
         input('\nVerification step needed to complete login.\n'
               'Please complete verification and press Enter to continue.')
+    driver.maximize_window()
 
     return driver
 
@@ -274,8 +252,9 @@ def verba_open_item(driver, sku):
 
 
 def verba_active_schedule(driver, department_name, course_number, section_code):
-    Course_Active = 'NOT FOUND'
+    Course_Status = 'NOT FOUND'
     schedule = None
+
     try:
         time.sleep(1)
         # Find department and course
@@ -288,110 +267,133 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
 
         if len(h3s):
             print('Course found')
+            Section_found = False
             for h3 in h3s:
-                div_course = h3.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
-                try:
-                    # Find section within dpt and course
-                    WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
-                    WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
-                    h4 = div_course.find_element(By.XPATH, './/h4[text()= "{}"]'.format(section_code))
-                    print('Section found')
-                    break
-                except:
-                    pass
-
-        div = h4.find_element(By.XPATH, '..')
-        li = div.find_element(By.XPATH, '..')
-
-        # Check if Active
-        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-        WebDriverWait(driver, 2).until(
-            EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-        button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
-        button.click()
-        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-        WebDriverWait(driver, 2).until(
-            EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-        Course_Active = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
-        # Check Schedule
-        try:
-            ul = li.find_element(By.XPATH, '..')
-            div1 = ul.find_element(By.XPATH, '..')
-            div2 = div1.find_element(By.XPATH, '..')
-            div3 = div2.find_element(By.XPATH, '..')
-
-            WebDriverWait(driver, 2).until(
-                EC.visibility_of_element_located((By.CLASS_NAME, "select")))
-            schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
-            schedule = schedules_menu.first_selected_option.text
-        except: pass
-    except:
-        time.sleep(2)
-        try:
-            # Find department and course
-            WebDriverWait(driver, 2).until(
-                EC.visibility_of_all_elements_located((
-                    By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
-            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((
-                By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
-            h3s = driver.find_elements(By.XPATH,
-                                       '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))
-            if len(h3s):
-                print('Course found')
-                for h3 in h3s:
+                if not Section_found:
+                    # Get div containing 'Active/Inactive' Button
                     div_course = h3.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                     try:
                         # Find section within dpt and course
-                        WebDriverWait(driver, 2).until(
-                            EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
-                        WebDriverWait(driver, 2).until(
-                            EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
                         h4 = div_course.find_element(By.XPATH, './/h4[text()= "{}"]'.format(section_code))
-                        print('Section found')
+                        # Get div containing group and schedule info
+                        div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
+                        # Get group name
+                        Group_name_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div / div[2] / div / div[1] / div[1] / h3'
+                        Group_name = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Group_name_xpath))).text
+                        Section_found = True
+                        print('Section found:')
+                        # Get schedule
+                        try:
+                            schedules_menu = Select(WebDriverWait(div_div, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                            schedule = schedules_menu.first_selected_option.text
+                            print(Group_name + '\n' + schedule)
+                        except:
+                            print(Group_name + 'Could not get schedule')
                         break
                     except:
-                        pass
+                        print('Section not found')
 
-            div = h4.find_element(By.XPATH, '..')
-            li = div.find_element(By.XPATH, '..')
+        # Check if Active
+        div = h4.find_element(By.XPATH, '..')
+        li = div.find_element(By.XPATH, '..')
+        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+        button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+        button.click()
+        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+        Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
+        print(Course_Status)
 
-            # Check if Active
-            WebDriverWait(driver, 2).until(
-                EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-            WebDriverWait(driver, 2).until(
-                EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-            button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
-            button.click()
-            WebDriverWait(driver, 2).until(
-                EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-            WebDriverWait(driver, 2).until(
-                EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-            Course_Active = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[
-                0].get_attribute("textContent")
-            # Check Schedule
+        if schedule == None:
+            # Check Schedule again just in case
             try:
                 ul = li.find_element(By.XPATH, '..')
                 div1 = ul.find_element(By.XPATH, '..')
                 div2 = div1.find_element(By.XPATH, '..')
                 div3 = div2.find_element(By.XPATH, '..')
 
-                WebDriverWait(driver, 2).until(
-                    EC.visibility_of_element_located((By.CLASS_NAME, "select")))
-                schedules_menu = Select(
-                    WebDriverWait(div3, 2).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+                schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
                 schedule = schedules_menu.first_selected_option.text
             except:
-                pass
+                print('Could not get schedule')
+    except:
+        time.sleep(2)
+        try:
+            time.sleep(1)
+            # Find department and course
+            WebDriverWait(driver, 2).until(
+                EC.visibility_of_all_elements_located((By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+            WebDriverWait(driver, 2).until(
+                EC.element_to_be_clickable((By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))))
+            h3s = driver.find_elements(By.XPATH, '//a[text()= "{}"]'.format(' '.join([department_name, course_number])))
+
+            if len(h3s):
+                print('Course found')
+                Section_found = False
+                for h3 in h3s:
+                    if not Section_found:
+                        # Get div containing 'Active/Inactive' Button
+                        div_course = h3.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
+                        try:
+                            # Find section within dpt and course
+                            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/h4[text()= "{}"]'.format(section_code))))
+                            h4 = div_course.find_element(By.XPATH, './/h4[text()= "{}"]'.format(section_code))
+                            # Get div containing group and schedule info
+                            div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
+                            # Get group name
+                            Group_name_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div / div[2] / div / div[1] / div[1] / h3'
+                            Group_name = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Group_name_xpath))).text
+                            Section_found = True
+                            print('Section found:')
+                            # Get schedule
+                            try:
+                                schedules_menu = Select(
+                                    WebDriverWait(div_div, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                                schedule = schedules_menu.first_selected_option.text
+                                print(Group_name + '\n' + schedule)
+                            except:
+                                print(Group_name + 'Could not get schedule')
+                        except:
+                            print('Section not found')
+
+            # Check if Active
+            div = h4.find_element(By.XPATH, '..')
+            li = div.find_element(By.XPATH, '..')
+            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+            button.click()
+            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
+            print(Course_Status)
+            if schedule == None:
+                # Check Schedule again just in case
+                try:
+                    ul = li.find_element(By.XPATH, '..')
+                    div1 = ul.find_element(By.XPATH, '..')
+                    div2 = div1.find_element(By.XPATH, '..')
+                    div3 = div2.find_element(By.XPATH, '..')
+
+                    WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+                    schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                    schedule = schedules_menu.first_selected_option.text
+                except:
+                    print('Could not get schedule')
         except:
             print('Section not found')
 
-    return Course_Active, schedule
+    return Course_Status, schedule
 
 
 def verba_price(driver):
     net_price = None
     student_price = None
-    Price_checked = False
     time.sleep(1)
     try:
         pricing_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / ul / li[2] / a'
@@ -616,3 +618,78 @@ def verba_ask_report(driver, tenant_id, Catalog):
             time.sleep(3)
 
     return Asked_for_report
+
+
+
+# def verba_connect_attempt_login(Credentials):
+#     Verba_Username = Credentials['Verba_Username']
+#     Verba_Password = Credentials['Verba_Password']
+#
+#     # Login to Verba Connect
+#     driver = webdriver.Chrome(ChromeDriverManager().install())
+#     # Open the website
+#     driver.get('https://verbaconnect.com/auth/vst/login')
+#
+#     # Select the id box
+#     id_box = driver.find_element(By.ID, 'username')
+#     # Send id information
+#     id_box.send_keys(Verba_Username)
+#
+#     # Find password box
+#     pass_box = driver.find_element(By.ID, 'password')
+#     # Send password
+#     pass_box.send_keys(Verba_Password)
+#
+#     # Find login button
+#     login_button_css = 'button[type="submit"]'
+#     login_button = driver.find_element(By.CSS_SELECTOR, login_button_css)
+#     # Click login
+#     login_button.click()
+#
+#     return driver
+#
+#
+# def verba_connect_login(Credentials):
+#     # Check if successful login
+#     Login = False
+#     count = 0
+#     total_count = 5
+#     while not Login and count < total_count:
+#         count += 1
+#         driver = verba_connect_attempt_login(Credentials)
+#         Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
+#         try:
+#             WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+#             time.sleep(2)
+#             WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+#             print('Successful login')
+#             driver.maximize_window()
+#             Login = True
+#         except:
+#             pass
+#             try:
+#                 print('\nVerification step needed to complete login.\n'
+#                       'Please complete verification to continue.')
+#                 # Check if successful manual login
+#                 WebDriverWait(driver, 2*60).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+#                 time.sleep(2)
+#                 WebDriverWait(driver, 2*60).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+#                 print('\nSuccessful login')
+#                 driver.maximize_window()
+#                 Login = True
+#             except:
+#                 if count < total_count:
+#                     print('\nTimed out. Retrying login')
+#                     driver.close()
+#                     time.sleep(2 * 60)
+#     if not Login:
+#         # wait to complete captcha and press enter
+#         input('Once verification completed, press Enter to continue')
+#         # Check if successful manual login
+#         WebDriverWait(driver, 20).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
+#         time.sleep(2)
+#         WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+#         print('Successful login')
+#         driver.maximize_window()
+#
+#     return driver
