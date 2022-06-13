@@ -280,8 +280,7 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                         # Get div containing group and schedule info
                         div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                         # Get group name
-                        Group_name_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div / div[2] / div / div[1] / div[1] / h3'
-                        Group_name = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Group_name_xpath))).text
+                        Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(section_code)).text
                         Section_found = True
                         print('Section found:')
                         # Get schedule
@@ -291,35 +290,37 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                             print(Group_name + '\n' + schedule)
                         except:
                             print(Group_name + 'Could not get schedule')
-                        break
                     except:
-                        print('Section not found')
+                        pass
 
-        # Check if Active
-        div = h4.find_element(By.XPATH, '..')
-        li = div.find_element(By.XPATH, '..')
-        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-        button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
-        button.click()
-        WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-        WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-        Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
-        print(Course_Status)
+        if not Section_found:
+            print('Section not found')
+        elif Section_found:
+            # Check if Active
+            div = h4.find_element(By.XPATH, '..')
+            li = div.find_element(By.XPATH, '..')
+            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+            button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+            button.click()
+            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+            Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
+            print(Course_Status)
 
-        if schedule == None:
-            # Check Schedule again just in case
-            try:
-                ul = li.find_element(By.XPATH, '..')
-                div1 = ul.find_element(By.XPATH, '..')
-                div2 = div1.find_element(By.XPATH, '..')
-                div3 = div2.find_element(By.XPATH, '..')
+            if schedule == None:
+                # Check Schedule again just in case
+                try:
+                    ul = li.find_element(By.XPATH, '..')
+                    div1 = ul.find_element(By.XPATH, '..')
+                    div2 = div1.find_element(By.XPATH, '..')
+                    div3 = div2.find_element(By.XPATH, '..')
 
-                WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
-                schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
-                schedule = schedules_menu.first_selected_option.text
-            except:
-                print('Could not get schedule')
+                    WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+                    schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                    schedule = schedules_menu.first_selected_option.text
+                except:
+                    print('Could not get schedule')
     except:
         time.sleep(2)
         try:
@@ -346,8 +347,7 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                             # Get div containing group and schedule info
                             div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                             # Get group name
-                            Group_name_xpath = '/ html / body / div[1] / div / div[1] / div / div[3] / div / div / div / div / div / div[2] / div / div[1] / div[1] / h3'
-                            Group_name = WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Group_name_xpath))).text
+                            Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(section_code)).text
                             Section_found = True
                             print('Section found:')
                             # Get schedule
@@ -359,34 +359,38 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                             except:
                                 print(Group_name + 'Could not get schedule')
                         except:
-                            print('Section not found')
+                            pass
 
-            # Check if Active
-            div = h4.find_element(By.XPATH, '..')
-            li = div.find_element(By.XPATH, '..')
-            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
-            button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
-            button.click()
-            WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-            WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
-            Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
-            print(Course_Status)
-            if schedule == None:
-                # Check Schedule again just in case
-                try:
-                    ul = li.find_element(By.XPATH, '..')
-                    div1 = ul.find_element(By.XPATH, '..')
-                    div2 = div1.find_element(By.XPATH, '..')
-                    div3 = div2.find_element(By.XPATH, '..')
+            if not Section_found:
+                print('Section not found')
+            elif Section_found:
+                # Check if Active
+                div = h4.find_element(By.XPATH, '..')
+                li = div.find_element(By.XPATH, '..')
+                WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+                WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')))
+                button = li.find_elements(By.XPATH, './/div[@class = "src-shared-Badge-wrapper"]')[0]
+                button.click()
+                WebDriverWait(driver, 2).until(EC.visibility_of_element_located((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+                WebDriverWait(driver, 2).until(EC.element_to_be_clickable((By.XPATH, './/span[@class = "src-shared-Badge-value"]')))
+                Course_Status = button.find_elements(By.XPATH, './/span[@class = "src-shared-Badge-value"]')[0].get_attribute("textContent")
+                print(Course_Status)
+                if schedule == None:
+                    # Check Schedule again just in case
+                    try:
+                        ul = li.find_element(By.XPATH, '..')
+                        div1 = ul.find_element(By.XPATH, '..')
+                        div2 = div1.find_element(By.XPATH, '..')
+                        div3 = div2.find_element(By.XPATH, '..')
 
-                    WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
-                    schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
-                    schedule = schedules_menu.first_selected_option.text
-                except:
-                    print('Could not get schedule')
+                        WebDriverWait(driver, 3).until(EC.visibility_of_element_located((By.CLASS_NAME, "select")))
+                        schedules_menu = Select(WebDriverWait(div3, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                        schedule = schedules_menu.first_selected_option.text
+                    except:
+                        print('Could not get schedule')
         except:
-            print('Section not found')
+            if not Section_found:
+                print('Section not found')
 
     return Course_Status, schedule
 
