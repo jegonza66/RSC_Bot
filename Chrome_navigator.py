@@ -389,8 +389,7 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                     except:
                         print('Could not get schedule')
         except:
-            if not Section_found:
-                print('Section not found')
+            print('Section not found')
 
     return Course_Status, schedule
 
