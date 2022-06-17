@@ -92,8 +92,8 @@ def BNED_DD():
     sys.stdout.close()
 
     # Hibernate after 5 minutes
-    time.sleep(5 * 60)
-    os.system("shutdown.exe /h")
+    # time.sleep(5 * 60)
+    # os.system("shutdown.exe /h")
 
 
 schedule.every().monday.at("02:35").do(BNED_DD)

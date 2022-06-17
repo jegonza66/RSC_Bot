@@ -40,8 +40,8 @@ def verba_connect_login(Credentials):
     try:
         Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
         WebDriverWait(driver, 60).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
-        time.sleep(2)
-        WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
+        time.sleep(3)
+        WebDriverWait(driver, 60).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
     except:
         input('\nVerification step needed to complete login.\n'
               'Please complete verification and press Enter to continue.')
