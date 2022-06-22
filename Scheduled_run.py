@@ -21,7 +21,6 @@ def BNED_DD():
     # Get Verba Connect username and password
     Credentials = Paths_Credentials.Verba_Credentials(Credentials=Credentials)
 
-
     # Download adoption and enrollment files
     adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
 
@@ -62,21 +61,30 @@ def BNED_DD():
     sys.stdout = Functions.Logger(Credentials)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
 
-    # Re check "No logical reason cases"
-    print('No Logical Reason Cases: {}\n'
-          'Cleared'.format(len(DD_update.loc[DD_update['Reason change not made'] == 'No Logical Reason'])))
-    DD_update['Change made in Connect?'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float('nan')
-    DD_update['Reason change not made'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float('nan')
-
     # If decided to ask reports before
     if schools_catalogs_report != {}:
         # Ask if reports recieved and make files comparison
         DD_update, Reports = Reports_automation.compare_reports(DD_update=DD_update, reports_folder_path=reports_folder_path)
 
+        # Save Report File
+        sys.stdout.close()
+
+        # Re run online check on missing report cases and No logical reason
+        DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
+
+    # Save console prints to Reports file
+    sys.stdout = Functions.Logger(Credentials)
+    # Re check "No logical reason cases"
+    print('No Logical Reason Cases: {}\n'
+          'Cleared'.format(len(DD_update.loc[DD_update['Reason change not made'] == 'No Logical Reason'])))
+    DD_update['Change made in Connect?'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
+        'nan')
+    DD_update['Reason change not made'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
+        'nan')
+
     # Save Report File
     sys.stdout.close()
-
-    # Re run online check on missing report cases and No logical reason
+    # Re run online check on missing report cases
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
 
     # Save console prints to Reports file
@@ -90,6 +98,12 @@ def BNED_DD():
         
     # Save Report File
     sys.stdout.close()
+
+    # Close driver
+    driver.close()
+
+    # Change dir to main path
+    os.chdir(Credentials['main_path'])
 
     # Hibernate after 5 minutes
     # time.sleep(5 * 60)

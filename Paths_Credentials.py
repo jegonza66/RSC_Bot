@@ -11,7 +11,8 @@ def Path(Credentials_file = 'Credentials/Credentials.pkl'):
         # Get save path
         Credentials['csv_save_path'] = input(
             'Please copy and paste the path to the folder to save the DD_update files.\nPath:').replace('\\', '/') + '/'
-
+        Credentials['main_path'] = input(
+            'Please copy and paste the path to the folder of the Main.py file.\nPath:').replace('\\', '/') + '/'
         # Save API Key and BNED OneDrive path in credentials file
         os.makedirs('Credentials', exist_ok=True)
         f = open(Credentials_file, 'wb')

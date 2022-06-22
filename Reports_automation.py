@@ -60,14 +60,14 @@ def ask_if_leave_out(DD_update):
 
 
 def request_reports(schools_catalogs_report, driver, DD_update):
+    restart = False
     Schools = schools_catalogs_report.keys()
     for School in Schools:
         print('\n{}'.format(School))
         School_Selected = Chrome_navigator.verba_open_school(driver=driver, Verba_School=School)
+        Catalogs = schools_catalogs_report[School]
         if School_Selected:
-            Catalogs = schools_catalogs_report[School]
             for Catalog in Catalogs:
-                Asked_for_report = False
                 print('{}'.format(Catalog))
                 Catalog_Selected = Chrome_navigator.verba_open_catalog(driver=driver, Catalog=Catalog)
                 if Catalog_Selected:
@@ -77,30 +77,87 @@ def request_reports(schools_catalogs_report, driver, DD_update):
                     else:
                         Answer = input('\nCould not as for the report of {} - {}. Plese choose one of the following options:\n'
                                        '1. Would you like me to check those cases online?\n'
-                                       '2. Would you like to ask for the report yourself?'.format(School, Catalog))
-
-                        if Answer == 1:
+                                       '2. Would you like to re-enter the school and catalog name?'.format(School, Catalog))
+                        if Answer == '1':
                             # sacar de la lista de catalogs
                             schools_catalogs_report[School].remove(Catalog)
+                        elif Answer == '2':
+                            restart = True
+                            # sacar de la lista de catalogs
+                            schools_catalogs_report[School].remove(Catalog)
+
+                            empty = {'', ' '}
+                            School_Catalog = input(
+                                '\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
+                                '(Example: School - Catalog -> "Enter")\n'
+                                'If you are done entering Schools and Catalogs, just press "Enter":')
+
+                            if School_Catalog not in empty:
+                                School, Catalog = School_Catalog.split(" - ")
+                                if School not in schools_catalogs_report.keys():
+                                    schools_catalogs_report[School] = [Catalog]
+                                else:
+                                    schools_catalogs_report[School].append(Catalog)
+                            break
+                            break
 
                 else:
                     Answer = input(
                         '\nCould not as for the report of {} - {}. Plese choose one of the following options:\n'
                         '1. Would you like me to check those cases online?\n'
-                        '2. Would you like to ask for the report yourself?'.format(School, Catalog))
-                    if Answer == 1:
+                        '2. Would you like to re-enter the school and catalog name?'.format(School, Catalog))
+                    if Answer == '1':
                         # sacar de la lista de catalogs
                         schools_catalogs_report[School].remove(Catalog)
+
+                    elif Answer == '2':
+                        restart = True
+                        # sacar de la lista de catalogs
+                        schools_catalogs_report[School].remove(Catalog)
+
+                        empty = {'', ' '}
+                        School_Catalog = input(
+                            '\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
+                            '(Example: School - Catalog -> "Enter")\n'
+                            'If you are done entering Schools and Catalogs, just press "Enter":')
+
+                        if School_Catalog not in empty:
+                            School, Catalog = School_Catalog.split(" - ")
+                            if School not in schools_catalogs_report.keys():
+                                schools_catalogs_report[School] = [Catalog]
+                            else:
+                                schools_catalogs_report[School].append(Catalog)
+                        break
+                        break
         else:
             Answer = input(
                 '\nCould not as for the reports of {}. Plese choose one of the following options:\n'
                 '1. Would you like me to check those cases online?\n'
-                '2. Would you like to ask for the report yourself?'.format(School))
-            if Answer == 1:
+                '2. Would you like to re-enter the school and catalog name?'.format(School))
+            if Answer == '1':
                 # sacar de la lista de catalogs
-                schools_catalogs_report(School, None)
+                schools_catalogs_report.pop(School, None)
 
-    return DD_update, schools_catalogs_report
+            elif Answer == '2':
+                restart = True
+                # sacar de la lista de catalogs
+                schools_catalogs_report.pop(School, None)
+
+                empty = {'', ' '}
+                School_Catalog = 'Yes'
+                while (School_Catalog not in empty):
+                    School_Catalog = input('\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
+                                           '(Example: School - Catalog -> "Enter")\n'
+                                           'If you are done entering Schools and Catalogs, just press "Enter":')
+
+                    if School_Catalog not in empty:
+                        School, Catalog = School_Catalog.split(" - ")
+                        if School not in schools_catalogs_report.keys():
+                            schools_catalogs_report[School] = [Catalog]
+                        else:
+                            schools_catalogs_report[School].append(Catalog)
+                break
+    return DD_update, schools_catalogs_report, restart
 
 
 def DD_update_drop_schools_catalogs_report(DD_update, schools_catalogs_report):
@@ -118,8 +175,10 @@ def DD_update_drop_schools_catalogs_report(DD_update, schools_catalogs_report):
 
 def get_reports(driver, DD_update):
     schools_catalogs_report = ask_if_leave_out(DD_update=DD_update)
-    DD_update, schools_catalogs_report = request_reports(schools_catalogs_report=schools_catalogs_report,
-                                                         driver=driver, DD_update=DD_update)
+    restart = True
+    while restart:
+        DD_update, schools_catalogs_report, restart = request_reports(schools_catalogs_report=schools_catalogs_report,
+                                                             driver=driver, DD_update=DD_update)
     DD_update = DD_update_drop_schools_catalogs_report(schools_catalogs_report=schools_catalogs_report, DD_update=DD_update)
 
     if schools_catalogs_report != {}:
