@@ -9,10 +9,8 @@ import sys
 import os
 
 
-# Define DD_update file save path
-Credentials = Paths_Credentials.Path()
-# Get Verba Connect username and password
-Credentials = Paths_Credentials.Verba_Credentials(Credentials)
+# Get DD_update file save path Verba Connect username and password and Cyberduck download paths
+Credentials = Paths_Credentials.get()
 # Open Chrome and log in to Verba Connect
 driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 # Get Files
@@ -49,10 +47,7 @@ if schools_catalogs_report != {}:
 # Save console prints to Reports file
 sys.stdout = Functions.Logger(Credentials)
 # Re check "No logical reason cases"
-print('No Logical Reason Cases: {}\n'
-      'Cleared'.format(len(DD_update.loc[DD_update['Reason change not made'] == 'No Logical Reason'])))
-DD_update['Change made in Connect?'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float('nan')
-DD_update['Reason change not made'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float('nan')
+Functions.wipe_no_logical_cases(DD_update=DD_update)
 # Save Report File
 sys.stdout.close()
 # Re run online check on missing report cases

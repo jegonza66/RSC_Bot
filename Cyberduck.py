@@ -7,7 +7,7 @@ from datetime import datetime
 import subprocess
 
 
-def download_files():
+def download_files(Credentials):
     # Get screen resolution
     width, height = pyautogui.size()
 
@@ -63,7 +63,7 @@ def download_files():
 
     # Check downloaded files
     file_date = datetime.today().date().strftime('%Y%m%d')
-    downloads_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files\Cyberduck'
+    downloads_dir = Credentials['adoption_enrollment_path' ] + 'Cyberduck'
     os.chdir(downloads_dir)
     Downloaded_files = filter(os.path.isfile, os.listdir(downloads_dir))
     Downloaded_files = [os.path.join(downloads_dir, f) for f in Downloaded_files if file_date in f]
@@ -71,11 +71,11 @@ def download_files():
     return Downloaded_files
 
 
-def extract_move_files():
+def extract_move_files(Credentials):
     # Get downloaded files
     file_date = datetime.today().date().strftime('%Y%m%d')
-    downloads_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files\Cyberduck'
-    files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
+    files_dir = Credentials['adoption_enrollment_path']
+    downloads_dir = files_dir + 'Cyberduck'
     os.chdir(downloads_dir)
     files = filter(os.path.isfile, os.listdir(downloads_dir))
     files = [os.path.join(downloads_dir, f) for f in files if file_date in f]  # add path to each file
@@ -115,18 +115,18 @@ def extract_move_files():
     return Extracted_files, Moved_files, file_date
 
 
-def get_new_old_files():
+def get_new_old_files(Credentials):
     Warning = False
     count = 0
-    Downloaded_files = download_files()
+    Downloaded_files = download_files(Credentials=Credentials)
     while len(Downloaded_files) != 2 and count < 2:
         count += 1
         print('Could not download files properly. Retrying...')
         print('Downloaded files:\n'
               '{}'.format('\n'.join(str(file) for file in Downloaded_files)))
-        Downloaded_files = download_files()
+        Downloaded_files = download_files(Credentials=Credentials)
 
-    Extracted_files, Moved_files, file_date = extract_move_files()
+    Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
 
     if len(Extracted_files) != 2 or len(Moved_files) != 2:
         Warning = 'WARNING:\n' \
@@ -136,10 +136,10 @@ def get_new_old_files():
                   '{}'.format('\n'.join(str(files) for files in Extracted_files), '\n'.join(str(files) for files in Moved_files))
 
     # get old and new files
-    Files_dir = r'C:\Users\joaco\Desktop\Joac\RSC-VitalSource\BNED DD\Files'
-    os.chdir(Files_dir)
-    files = filter(os.path.isfile, os.listdir(Files_dir))
-    files = [os.path.join(Files_dir, f) for f in files] # add path to each file
+    files_dir = Credentials['adoption_enrollment_path']
+    os.chdir(files_dir)
+    files = filter(os.path.isfile, os.listdir(files_dir))
+    files = [os.path.join(files_dir, f) for f in files] # add path to each file
     files.sort(key=lambda x: os.path.getmtime(x))
     files = files[-4:]
 

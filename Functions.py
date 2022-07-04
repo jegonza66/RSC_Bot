@@ -118,9 +118,18 @@ def get_files(Credentials):
         yes = {'yes', 'y', 'ye'}
         if auto_cyberduck_download in yes:
             # Download adoption and enrollment files
-            adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
+            adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files(Credentials=Credentials)
         else:
             adoption_files_path, enrollment_files_path = None, None
     else:
         adoption_files_path, enrollment_files_path = None, None
     return adoption_files_path, enrollment_files_path, Warning
+
+
+def wipe_no_logical_cases(DD_update):
+    print('No Logical Reason cases cleared: {}'
+          .format(len(DD_update.loc[DD_update['Reason change not made'] == 'No Logical Reason'])))
+    DD_update['Change made in Connect?'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
+        'nan')
+    DD_update['Reason change not made'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
+        'nan')

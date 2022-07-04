@@ -3,6 +3,9 @@ import schedule
 import os
 import sys
 import subprocess
+import pandas as pd
+import warnings
+warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 cmd='rundll32.exe user32.dll, LockWorkStation'
 
 import Paths_Credentials
@@ -12,15 +15,31 @@ import Functions
 import Chrome_navigator
 import Reports_automation
 import Cyberduck
+import AMS_tracker
 
 
-def BNED_DD(driver):
-    # Define DD_update file save path
-    Credentials = Paths_Credentials.Path()
-    # Get Verba Connect username and password
-    Credentials = Paths_Credentials.Verba_Credentials(Credentials=Credentials)
+def AMS_Track():
+    # Get AMS username, passwrod and Tasks.xlsx file path
+    Credentials = AMS_tracker.paths()
+    # Login AMS
+    print('Login to AMS')
+    driver = AMS_tracker.login_ams(Credentials['AMS_Username'], Credentials['AMS_Password'])
+    # read excel with tasks
+    print('Load AMS_tasks.xlsx file')
+    excel_tasks = pd.read_excel(Credentials['AMS_Tasks_filepath'], sheet_name="Tasks")
+    excel_tasks["note"] = excel_tasks["note"].fillna("N/A")
+    days_list = excel_tasks["day"].unique()
+    # Track tasks
+    print('Tracking hours')
+    AMS_tracker.Track(driver=driver, days_list=days_list, excel_tasks=excel_tasks)
+    # Close AMS driver
+    driver.close()
+    print('Hours tracked successfully')
+
+
+def BNED_DD(driver, Credentials):
     # Download adoption and enrollment files
-    adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files()
+    adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files(Credentials=Credentials)
     # Lock screen
     print('Locking Screen')
     subprocess.call(cmd)
@@ -56,12 +75,7 @@ def BNED_DD(driver):
     # Save console prints to Reports file
     sys.stdout = Functions.Logger(Credentials)
     # Re check "No logical reason cases"
-    print('No Logical Reason Cases: {}\n'
-          'Cleared'.format(len(DD_update.loc[DD_update['Reason change not made'] == 'No Logical Reason'])))
-    DD_update['Change made in Connect?'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
-        'nan')
-    DD_update['Reason change not made'].loc[DD_update['Reason change not made'] == 'No Logical Reason'] = float(
-        'nan')
+    Functions.wipe_no_logical_cases(DD_update=DD_update)
     # Save Report File
     sys.stdout.close()
     # Re run online check on missing report cases
@@ -75,28 +89,25 @@ def BNED_DD(driver):
         print(Warning)
     # Save Report File
     sys.stdout.close()
-    # Close driver
-    driver.close()
     # Change dir to main path
     os.chdir(Credentials['main_path'])
     # Hibernate after 5 minutes
-    # time.sleep(5 * 60)
-    # os.system("shutdown.exe /h")
+    time.sleep(5 * 60)
+    os.system("shutdown.exe /h")
 
 # Log in to connect first to solve captcha
-# Define DD_update file save path
-Credentials = Paths_Credentials.Path()
-# Get Verba Connect username and password
-Credentials = Paths_Credentials.Verba_Credentials(Credentials=Credentials)
+# Get DD_update file save path Verba Connect username and password and Cyberduck download paths
+Credentials = Paths_Credentials.get()
 # Open Chrome and log in to Verba Connect
 driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 
 # Define run days and times
-schedule.every().monday.at("02:35").do(BNED_DD, driver)
-schedule.every().tuesday.at("02:35").do(BNED_DD, driver)
-schedule.every().wednesday.at("02:35").do(BNED_DD, driver)
-schedule.every().thursday.at("02:35").do(BNED_DD, driver)
-schedule.every().friday.at("02:35").do(BNED_DD, driver)
+schedule.every().monday.at("00:01").do(AMS_Track)
+schedule.every().monday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().tuesday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().wednesday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().thursday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().friday.at("02:35").do(BNED_DD, driver, Credentials)
 
 # Run every day
 while True:

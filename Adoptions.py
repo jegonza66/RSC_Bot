@@ -44,7 +44,7 @@ def load_files(adoption_files_path):
     Old_ad_file['section_code_DD'] = Old_ad_file['section_code'].str.replace(r'^(0+)', '', regex=True)
 
     date = Adoption_new_path.split('_')
-    date = pd.to_datetime(date[2], format="%Y%m%d").strftime("%d-%m-%Y")
+    date = pd.to_datetime(date[-2], format="%Y%m%d").strftime("%d-%m-%Y")
 
     return Old_ad_file, New_ad_file, date
 
