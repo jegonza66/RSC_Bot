@@ -9,7 +9,7 @@ from itertools import compress
 import Functions
 
 
-def load_files(adoption_files_path):
+def load_files(Credentials, adoption_files_path):
 
     if adoption_files_path is None:
         # Read files
@@ -32,11 +32,13 @@ def load_files(adoption_files_path):
         Adoption_old_path = list(compress(adoption_files_path, old_index))[0]
         Adoption_new_path = list(compress(adoption_files_path, new_index))[0]
 
-    print('Loading Old adoption file...')
+    print('Loading Old adoption file:\n'
+          '{}'.format(Adoption_old_path.split(Credentials['adoption_enrollment_path'])[-1]))
     Old_ad_file = pd.read_csv(Adoption_old_path, keep_default_na=False)
     print('Done')
 
-    print('Loading new adoption file...')
+    print('Loading new adoption file:\n'
+          '{}'.format(Adoption_new_path.split(Credentials['adoption_enrollment_path'])[-1]))
     New_ad_file = pd.read_csv(Adoption_new_path, keep_default_na=False)
     print('Done')
 

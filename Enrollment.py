@@ -7,7 +7,7 @@ from itertools import compress
 
 import Functions
 
-def load_files(enrollment_files_path):
+def load_files(Credentials, enrollment_files_path):
 
     if enrollment_files_path is None:
         # Read files
@@ -28,11 +28,13 @@ def load_files(enrollment_files_path):
         Enrollment_old_path = list(compress(enrollment_files_path, old_index))[0]
         Enrollment_new_path = list(compress(enrollment_files_path, new_index))[0]
 
-    print('Loading OLD enrollment file...')
+    print('Loading old enrollment file:\n'
+          '{}'.format(Enrollment_old_path.split(Credentials['adoption_enrollment_path'])[-1]))
     Old_en_file = pd.read_csv(Enrollment_old_path, keep_default_na=False)
     print('Done')
 
-    print('Loading NEW enrollment file...')
+    print('Loading new enrollment file:\n'
+          '{}'.format(Enrollment_new_path.split(Credentials['adoption_enrollment_path'])[-1]))
     New_en_file = pd.read_csv(Enrollment_new_path, keep_default_na=False)
     print('Done')
 
