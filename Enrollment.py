@@ -7,6 +7,7 @@ from itertools import compress
 
 import Functions
 
+
 def load_files(Credentials, enrollment_files_path):
 
     if enrollment_files_path is None:
@@ -106,10 +107,10 @@ def compare_make_DD_update(Old_en_file, New_en_file, Old_ad_file, New_ad_file, D
     deactivated_enrollments_df['Type of Change'] = 'deactivated enrollment'
 
     if deactivated_enrollments_df.__len__() or new_enrollments_df.__len__():
-        print('Loading enrollment changes to DD_update file.')
+        print('Loading enrollment changes to DD_update file')
         DD_update = pd.concat([DD_update, new_enrollments_df, deactivated_enrollments_df]).reset_index(drop=True)
 
     DD_update['Date of Change (date of adoptions file of new data)'] = pd.to_datetime(date, format="%d-%m-%Y").strftime("%m/%d/%Y")
-    print('Done.')
+    print('Done')
 
     return DD_update

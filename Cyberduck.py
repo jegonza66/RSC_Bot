@@ -128,9 +128,6 @@ def get_new_old_files(Credentials):
         try:
             Downloaded_files = download_files(Credentials=Credentials)
             Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
-            # if len(Downloaded_files) != 2 or len(Extracted_files) != 2 or len(Moved_files) != 2:
-            #     Downloaded_files = download_files(Credentials=Credentials)
-            #     Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
         except:
             continue
 

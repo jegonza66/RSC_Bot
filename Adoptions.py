@@ -331,11 +331,11 @@ def compare_make_DD_update(Old_ad_file, New_ad_file):
     schedule_end_df = Functions.make_full_df(schedule_end_change)
     schedule_end_df['Type of Change'] = 'end date change'
 
-    print('Loading adoption changes to DD_update file.')
+    print('Loading adoption changes to DD_update file')
 
     DD_update = pd.concat([new_sections_df, updated_items_df, additional_items_df, new_items_df, new_schedules_df,
                            new_catalogs_df, deactivated_catalogs_df, deactivated_sections_df, net_price_df,
                            student_price_df, schedule_start_df, schedule_end_df, opt_out_df]).reset_index(drop=True)
-    print('Done.')
+    print('Done')
 
     return DD_update
