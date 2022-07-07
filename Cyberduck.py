@@ -118,15 +118,21 @@ def extract_move_files(Credentials):
 def get_new_old_files(Credentials):
     Warning = False
     count = 0
-    Downloaded_files = download_files(Credentials=Credentials)
-    while len(Downloaded_files) != 2 and count < 2:
+    Downloaded_files = []
+    Extracted_files = []
+    Moved_files = []
+    while (len(Downloaded_files) != 2 or len(Extracted_files) != 2 or len(Moved_files) != 2) and count < 5:
         count += 1
-        print('Could not download files properly. Retrying...')
-        print('Downloaded files:\n'
-              '{}'.format('\n'.join(str(file) for file in Downloaded_files)))
-        Downloaded_files = download_files(Credentials=Credentials)
-
-    Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
+        if count > 1:
+            print('Could not download and extract files properly. Retrying...')
+        try:
+            Downloaded_files = download_files(Credentials=Credentials)
+            Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
+            # if len(Downloaded_files) != 2 or len(Extracted_files) != 2 or len(Moved_files) != 2:
+            #     Downloaded_files = download_files(Credentials=Credentials)
+            #     Extracted_files, Moved_files, file_date = extract_move_files(Credentials=Credentials)
+        except:
+            continue
 
     if len(Extracted_files) != 2 or len(Moved_files) != 2:
         Warning = 'WARNING:\n' \
