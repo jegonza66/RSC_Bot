@@ -22,7 +22,11 @@ def ask_if_leave_out(DD_update):
                                                              (DD_update['Type of Change'] != 'new schedule')]),
                                            ' - '.join([str(School), str(Catalog)])))
     schools_catalogs_cases = list(dict.fromkeys(schools_catalogs_cases))
-    schools_catalogs_cases.sort(reverse=False)
+    schools_catalogs_cases.sort(reverse=True)
+    num_schools_catalogs_cases = []
+    for i, tup in enumerate(schools_catalogs_cases):
+        num_schools_catalogs_cases.append((i+1, tup))
+    num_schools_catalogs_cases.sort(reverse=True)
 
     missing_rows = DD_update['Change made in Connect?'].isna().sum() - \
                    (DD_update['Type of Change'] == 'new enrollment').sum() - \
@@ -31,7 +35,7 @@ def ask_if_leave_out(DD_update):
 
     print('\nTotal number of cases: {}\n'
           'Number of cases to be checked: {}\n'
-          '{}'.format(len(DD_update), missing_rows, '\n'.join(str(line) for line in schools_catalogs_cases)))
+          '{}'.format(len(DD_update), missing_rows, '\n'.join(str(line) for line in num_schools_catalogs_cases)))
 
     # Ask if want to get reports for certain catalogs. If no answer in five minutes Answer is no.
     try:
@@ -42,20 +46,30 @@ def ask_if_leave_out(DD_update):
         Answer = 'no'
 
     schools_catalogs_report = {}
-    empty = {'', ' '}
+    # empty = {'', ' '}
     yes = {'yes', 'y', 'ye'}
-    School_Catalog = 'Yes'
-    while (Answer in yes) & (School_Catalog not in empty):
-        School_Catalog = input('\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
-                                                '(Example: School - Catalog -> "Enter")\n'
-                                                'If you are done entering Schools and Catalogs, just press "Enter":')
-
-        if School_Catalog not in empty:
-            School, Catalog = School_Catalog.split(" - ")
-            if School not in schools_catalogs_report.keys():
-                schools_catalogs_report[School] = [Catalog]
-            else:
-                schools_catalogs_report[School].append(Catalog)
+    # School_Catalog = 'Yes'
+    # while (Answer in yes) & (School_Catalog not in empty):
+    if Answer in yes:
+        # School_Catalog_num = input('\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
+        #                                         '(Example: School - Catalog -> "Enter")\n'
+        #                                         'If you are done entering Schools and Catalogs, just press "Enter":')
+        School_Catalog_num = False
+        while type(School_Catalog_num) != int:
+            try:
+                School_Catalog_num = int(input('\nPlease enter the number of catalogs to ask for reports.'))
+            except ValueError:
+                print("That's not an number!")
+        if School_Catalog_num:
+            num = int(School_Catalog_num)
+            num_schools_catalogs_cases.sort(reverse=False)
+            for i in range(num):
+                School_Catalog = schools_catalogs_cases[i][1]
+                School, Catalog = School_Catalog.split(" - ")
+                if School not in schools_catalogs_report.keys():
+                    schools_catalogs_report[School] = [Catalog]
+                else:
+                    schools_catalogs_report[School].append(Catalog)
     return schools_catalogs_report
 
 

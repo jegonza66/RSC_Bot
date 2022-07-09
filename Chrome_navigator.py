@@ -472,41 +472,9 @@ def verba_dashboard_schedule(driver, start_date, end_date):
     invoice_date = 'NOT FOUND'
     schedule_start_date = 'NOT FOUND'
     time.sleep(1)
-    try:
-        # Open Dashboard
-        Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
-        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.XPATH, Dashboard_xpath)))
-        WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.XPATH, Dashboard_xpath))).click()
-
-        # Find schedule
-        h3 = driver.find_element(By.XPATH, '//h3[text()= "{}"]'.format(' - '.join([start_date, end_date])))
-        div = h3.find_element(By.XPATH, '..')
-
-        # Find shcedule start
-        schedule_start_text = div.find_element(By.XPATH, './/h5[text()= "Schedule Start"]')
-        # Find opt out date
-        div_schedule_start = schedule_start_text.find_element(By.XPATH, '..')
-        schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
-
-        # Find opt out
-        opt_out_text = div.find_element(By.XPATH, './/h5[text()= "Opt-Outs End"]')
-        #Find opt out date
-        div_opt_out = opt_out_text.find_element(By.XPATH, '..')
-        opt_out_date_text = div_opt_out.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
-
-        # Find invoice
-        invoice_text = div.find_element(By.XPATH, './/h5[text()= "Invoice Issued"]')
-        # Find Invoice date
-        div_invoice = invoice_text.find_element(By.XPATH, '..')
-        invoice_date_text = div_invoice.find_element(By.CLASS_NAME,
-                                                     "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
-
-        year = datetime.strptime(start_date, '%Y-%m-%d').year
-        schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0], schedule_start_date_text[1]]), "%Y-%B-%d")
-        opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]), "%Y-%B-%d")
-        invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
-    except:
-        time.sleep(2)
+    count = 0
+    while type(opt_out_date) == str or type(invoice_date) == str or type(schedule_start_date) == str and count < 2:
+        count += 1
         try:
             # Open Dashboard
             Dashboard_xpath = '/ html / body / div[1] / div / nav / div[1] / a[2]'
@@ -521,37 +489,38 @@ def verba_dashboard_schedule(driver, start_date, end_date):
             schedule_start_text = div.find_element(By.XPATH, './/h5[text()= "Schedule Start"]')
             # Find opt out date
             div_schedule_start = schedule_start_text.find_element(By.XPATH, '..')
-            schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME,
-                                                                       "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
+            schedule_start_date_text = div_schedule_start.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
 
             # Find opt out
             opt_out_text = div.find_element(By.XPATH, './/h5[text()= "Opt-Outs End"]')
-            # Find opt out date
+            #Find opt out date
             div_opt_out = opt_out_text.find_element(By.XPATH, '..')
-            opt_out_date_text = div_opt_out.find_element(By.CLASS_NAME,
-                                                         "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
-                '\n')
+            opt_out_date_text = div_opt_out.find_element(By.CLASS_NAME, "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
 
             # Find invoice
             invoice_text = div.find_element(By.XPATH, './/h5[text()= "Invoice Issued"]')
-            # Find opt out date
+            # Find Invoice date
             div_invoice = invoice_text.find_element(By.XPATH, '..')
             invoice_date_text = div_invoice.find_element(By.CLASS_NAME,
-                                                         "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split(
-                '\n')
-
+                                                         "src-dashboard-page-ScheduleStats-DateDot-View-date").text.split('\n')
+            # Take start date year asuming invoice date is the same year.
             year = datetime.strptime(start_date, '%Y-%m-%d').year
-            schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0],
-                                                              schedule_start_date_text[1]]), "%Y-%B-%d")
-            opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]),
-                                             "%Y-%B-%d")
-            invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]),
-                                             "%Y-%B-%d")
-
+            schedule_start_date = datetime.strptime('-'.join([str(year), schedule_start_date_text[0], schedule_start_date_text[1]]), "%Y-%B-%d")
+            opt_out_date = datetime.strptime('-'.join([str(year), opt_out_date_text[0], opt_out_date_text[1]]), "%Y-%B-%d")
+            invoice_date = datetime.strptime('-'.join([str(year), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
+            # If opt out or invoice dates are earlier than start date, add one year
+            if opt_out_date < schedule_start_date:
+                opt_out_date = datetime.strptime('-'.join([str(year+1), opt_out_date_text[0], opt_out_date_text[1]]), "%Y-%B-%d")
+                invoice_date = datetime.strptime('-'.join([str(year+1), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
+            elif invoice_date < schedule_start_date:
+                invoice_date = datetime.strptime('-'.join([str(year+1), invoice_date_text[0], invoice_date_text[1]]),"%Y-%B-%d")
         except:
-            print('Could not find Opt Out and Invoice Dates')
-            driver.refresh()
-            time.sleep(3)
+            time.sleep(2)
+            continue
+    if type(opt_out_date) == str or type(invoice_date) == str or type(schedule_start_date) == str:
+        print('Could not find Opt Out and Invoice Dates')
+        driver.refresh()
+        time.sleep(3)
 
     return schedule_start_date, opt_out_date, invoice_date
 
