@@ -87,12 +87,14 @@ def wait_slurpee(DD_update):
 
 
 class Logger(object):
-    def __init__(self, Credentials, date):
+    def __init__(self, Credentials, date=None):
         save_path = Credentials['csv_save_path'] + 'Reports/'
         os.makedirs(save_path, exist_ok=True)
-        file_date = datetime.strptime(date, '%d-%m-%Y')
-        file_name = file_date.strftime(save_path + 'Report %Y_%m_%d.log')
-
+        if date is not None:
+            file_date = datetime.strptime(date, '%d-%m-%Y')
+            file_name = file_date.strftime(save_path + 'Report %Y_%m_%d.log')
+        else:
+            file_name = time.strftime(save_path + 'Report %Y_%m_%d.log')
         self.terminal = sys.stdout
         self.log = open(file_name, "a")
 

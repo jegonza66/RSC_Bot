@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import filedialog
 from datetime import datetime
 from itertools import compress
+import sys
 
 import Functions
 
@@ -32,6 +33,12 @@ def load_files(Credentials, adoption_files_path):
         Adoption_old_path = list(compress(adoption_files_path, old_index))[0]
         Adoption_new_path = list(compress(adoption_files_path, new_index))[0]
 
+    date = Adoption_new_path.split('_')
+    date = pd.to_datetime(date[-2], format="%Y%m%d").strftime("%d-%m-%Y")
+
+    # Save console prints to Reports file
+    sys.stdout = Functions.Logger(Credentials, date)
+
     print('Loading Old adoption file: {}'.format(Adoption_old_path.split(Credentials['adoption_enrollment_path'])[-1]))
     Old_ad_file = pd.read_csv(Adoption_old_path, keep_default_na=False)
     print('Done')
@@ -42,9 +49,6 @@ def load_files(Credentials, adoption_files_path):
 
     New_ad_file['section_code_DD'] = New_ad_file['section_code'].str.replace(r'^(0+)', '', regex=True)
     Old_ad_file['section_code_DD'] = Old_ad_file['section_code'].str.replace(r'^(0+)', '', regex=True)
-
-    date = Adoption_new_path.split('_')
-    date = pd.to_datetime(date[-2], format="%Y%m%d").strftime("%d-%m-%Y")
 
     return Old_ad_file, New_ad_file, date
 

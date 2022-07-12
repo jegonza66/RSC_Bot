@@ -41,10 +41,10 @@ def BNED_DD(driver, Credentials):
     # Download adoption and enrollment files
     adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files(Credentials=Credentials)
     # Lock screen
-    print('Locking Screen')
-    subprocess.call(cmd)
-    # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials)
+    # print('Locking Screen')
+    # subprocess.call(cmd)
+    # # Save console prints to Reports file
+    # sys.stdout = Functions.Logger(Credentials)
     # DD1: adoptions and enrollments file comparison
     Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,
                                                         enrollment_files_path=enrollment_files_path,
@@ -52,7 +52,7 @@ def BNED_DD(driver, Credentials):
     # Save Report File
     sys.stdout.close()
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials)
+    sys.stdout = Functions.Logger(Credentials, date)
     # Ask for schools and catalogs to leave out of online check and get report
     DD_update, schools_catalogs_report, reports_folder_path = Reports_automation.get_reports(driver=driver, DD_update=DD_update)
     # Wait for Slurpee to finish before checking
@@ -62,7 +62,7 @@ def BNED_DD(driver, Credentials):
     # DD2: Validate changes in Connect
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
     # Save DD2_update file without report cases
-    sys.stdout = Functions.Logger(Credentials)
+    sys.stdout = Functions.Logger(Credentials, date)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
     # If decided to ask reports before
     if schools_catalogs_report != {}:
@@ -73,7 +73,7 @@ def BNED_DD(driver, Credentials):
         # Re run online check on missing report cases and No logical reason
         DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials)
+    sys.stdout = Functions.Logger(Credentials, date)
     # Re check "No logical reason cases"
     Functions.wipe_no_logical_cases(DD_update=DD_update)
     # Save Report File
@@ -81,7 +81,7 @@ def BNED_DD(driver, Credentials):
     # Re run online check on missing report cases
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials)
+    sys.stdout = Functions.Logger(Credentials, date)
     # Save DD2_update final file (overwrites the first one)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
     # print warning about downloaded files if necessary
@@ -103,11 +103,11 @@ driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 
 # Define run days and times
 schedule.every().monday.at("00:01").do(AMS_Track)
-schedule.every().monday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().tuesday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().wednesday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().thursday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().friday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().monday.at("03:35").do(BNED_DD, driver, Credentials)
+schedule.every().tuesday.at("03:35").do(BNED_DD, driver, Credentials)
+schedule.every().wednesday.at("03:35").do(BNED_DD, driver, Credentials)
+schedule.every().thursday.at("03:35").do(BNED_DD, driver, Credentials)
+schedule.every().friday.at("03:35").do(BNED_DD, driver, Credentials)
 
 # Run every day
 while True:
