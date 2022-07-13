@@ -280,16 +280,20 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                         # Get div containing group and schedule info
                         div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                         # Get group name
-                        Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(section_code)).text
+                        try:
+                            Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(section_code)).text
+                        except:
+                            Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Non-Participating")]'.format(
+                                section_code)).text
                         Section_found = True
                         print('Section found:')
                         # Get schedule
                         try:
-                            schedules_menu = Select(WebDriverWait(div_div, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                            schedules_menu = Select(WebDriverWait(div_div, 3).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
                             schedule = schedules_menu.first_selected_option.text
                             print(Group_name + '\n' + schedule)
                         except:
-                            print(Group_name + 'Could not get schedule')
+                            print(Group_name + '\nCould not get schedule')
                     except:
                         pass
 
@@ -347,17 +351,23 @@ def verba_active_schedule(driver, department_name, course_number, section_code):
                             # Get div containing group and schedule info
                             div_div = div_course.find_element(By.XPATH, '..').find_element(By.XPATH, '..')
                             # Get group name
-                            Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(section_code)).text
+                            try:
+                                Group_name = div_div.find_element(By.XPATH, './/h3[contains(text(), "Group")]'.format(
+                                    section_code)).text
+                            except:
+                                Group_name = div_div.find_element(By.XPATH,
+                                                                  './/h3[contains(text(), "Non-Participating")]'.format(
+                                                                      section_code)).text
                             Section_found = True
                             print('Section found:')
                             # Get schedule
                             try:
-                                schedules_menu = Select(
-                                    WebDriverWait(div_div, 5).until(EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
+                                schedules_menu = Select(WebDriverWait(div_div, 3).until(
+                                    EC.element_to_be_clickable((By.CLASS_NAME, "select"))))
                                 schedule = schedules_menu.first_selected_option.text
                                 print(Group_name + '\n' + schedule)
                             except:
-                                print(Group_name + 'Could not get schedule')
+                                print(Group_name + '\nCould not get schedule')
                         except:
                             pass
 

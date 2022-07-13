@@ -38,38 +38,28 @@ def ask_if_leave_out(DD_update):
           '{}'.format(len(DD_update), missing_rows, '\n'.join(str(line) for line in num_schools_catalogs_cases)))
 
     # Ask if want to get reports for certain catalogs. If no answer in five minutes Answer is no.
-    try:
-        Answer = func_timeout(5 * 60, lambda: input('\nWould you like to exclude any Schools and Catalogs from the online check?\n'
-                          'Please answer "yes" or "no":'))
-    except FunctionTimedOut:
-        print('no')
-        Answer = 'no'
+    School_Catalog_num = False
+    while type(School_Catalog_num) != int:
+        try:
+            School_Catalog_num = func_timeout(5 * 60, lambda: int(input('\nPlease enter the number of catalogs to ask for reports.')))
+        except ValueError:
+            print("That's not an number!")
+        except FunctionTimedOut:
+            print('No')
+            School_Catalog_num = 0
 
     schools_catalogs_report = {}
-    # empty = {'', ' '}
-    yes = {'yes', 'y', 'ye'}
-    # School_Catalog = 'Yes'
-    # while (Answer in yes) & (School_Catalog not in empty):
-    if Answer in yes:
-        # School_Catalog_num = input('\nPlease enter the Schools and Catalogs to exclude separated by " - " \n'
-        #                                         '(Example: School - Catalog -> "Enter")\n'
-        #                                         'If you are done entering Schools and Catalogs, just press "Enter":')
-        School_Catalog_num = False
-        while type(School_Catalog_num) != int:
-            try:
-                School_Catalog_num = int(input('\nPlease enter the number of catalogs to ask for reports.'))
-            except ValueError:
-                print("That's not an number!")
-        if School_Catalog_num:
-            num = int(School_Catalog_num)
-            num_schools_catalogs_cases.sort(reverse=False)
-            for i in range(num):
-                School_Catalog = schools_catalogs_cases[i][1]
-                School, Catalog = School_Catalog.split(" - ")
-                if School not in schools_catalogs_report.keys():
-                    schools_catalogs_report[School] = [Catalog]
-                else:
-                    schools_catalogs_report[School].append(Catalog)
+    if School_Catalog_num:
+        num = int(School_Catalog_num)
+        num_schools_catalogs_cases.sort(reverse=False)
+        for i in range(num):
+            School_Catalog = schools_catalogs_cases[i][1]
+            School, Catalog = School_Catalog.split(" - ")
+            if School not in schools_catalogs_report.keys():
+                schools_catalogs_report[School] = [Catalog]
+            else:
+                schools_catalogs_report[School].append(Catalog)
+
     return schools_catalogs_report
 
 
@@ -113,8 +103,6 @@ def request_reports(schools_catalogs_report, driver, DD_update):
                                 else:
                                     schools_catalogs_report[School].append(Catalog)
                             break
-                            break
-
                 else:
                     Answer = input(
                         '\nCould not as for the report of {} - {}. Plese choose one of the following options:\n'
@@ -141,7 +129,6 @@ def request_reports(schools_catalogs_report, driver, DD_update):
                                 schools_catalogs_report[School] = [Catalog]
                             else:
                                 schools_catalogs_report[School].append(Catalog)
-                        break
                         break
         else:
             Answer = input(
