@@ -524,6 +524,8 @@ def verba_dashboard_schedule(driver, start_date, end_date):
                 invoice_date = datetime.strptime('-'.join([str(year+1), invoice_date_text[0], invoice_date_text[1]]), "%Y-%B-%d")
             elif invoice_date < schedule_start_date:
                 invoice_date = datetime.strptime('-'.join([str(year+1), invoice_date_text[0], invoice_date_text[1]]),"%Y-%B-%d")
+            print('Invoice date: {}'.format(invoice_date))
+            print('Opt out date: {}'.format(opt_out_date))
         except:
             time.sleep(2)
             continue

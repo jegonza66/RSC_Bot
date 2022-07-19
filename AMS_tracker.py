@@ -1,9 +1,12 @@
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
+
 from datetime import datetime, timedelta
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import time
 import pickle
 import os
@@ -51,15 +54,17 @@ def login_ams(username, password):
     driver = webdriver.Chrome(ChromeDriverManager().install())
     driver.get('https://ams.gfolkdev.net/')
 
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, 'provider_user_email')))
     id_box = driver.find_element(By.ID, 'provider_user_email')
     id_box.send_keys(username)
 
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, 'provider_user_password')))
     pass_box = driver.find_element(By.ID, 'provider_user_password')
     pass_box.send_keys(password)
 
     login_button_css = 'input[type="submit"]'
-    login_button = driver.find_element(By.CSS_SELECTOR, login_button_css)
-    login_button.click()
+    WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, login_button_css)))
+    WebDriverWait(driver, 5).until(EC.element_to_be_clickable((By.CSS_SELECTOR, login_button_css))).click()
 
     driver.maximize_window()
 
@@ -69,27 +74,39 @@ def login_ams(username, password):
 def upload_tasks(driver, tasks_to_upload):
     for index, row in tasks_to_upload.iterrows():
         # upload client
-        select_client = Select(driver.find_element(By.ID, 'time_entry_client_id'))
+        client_menu = 'time_entry_client_id'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, client_menu)))
+        select_client = Select(driver.find_element(By.ID, client_menu))
         select_client.select_by_visible_text(row.client)
 
         # upload project
-        select_project = Select(driver.find_element(By.ID, 'time_entry_project_id'))
+        project_menu = 'time_entry_project_id'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, project_menu)))
+        select_project = Select(driver.find_element(By.ID, project_menu))
         select_project.select_by_visible_text(row.project)
 
         # upload task
-        select_task = Select(driver.find_element(By.ID, 'time_entry_service_id'))
+        task_menu = 'time_entry_service_id'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, task_menu)))
+        select_task = Select(driver.find_element(By.ID, task_menu))
         select_task.select_by_visible_text(row.task)
 
         # upload note
-        notes_box = driver.find_element(By.ID, 'time_entry_notes')
+        note_menu = 'time_entry_notes'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, note_menu)))
+        notes_box = driver.find_element(By.ID, note_menu)
         notes_box.send_keys(row.note)
 
         # upload start date
-        start_time = driver.find_element(By.ID, 'time_entry_start_time')
+        start_time_menu = 'time_entry_start_time'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, start_time_menu)))
+        start_time = driver.find_element(By.ID, start_time_menu)
         start_time.send_keys(row.start_date)
 
         # upload end date
-        end_time = driver.find_element(By.ID, 'time_entry_end_time')
+        end_time_menu = 'time_entry_end_time'
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, end_time_menu)))
+        end_time = driver.find_element(By.ID, end_time_menu)
         end_time.send_keys(row.end_date + "\ue007")
         time.sleep(1)
 
@@ -130,6 +147,7 @@ def Track(driver, days_list, excel_tasks):
 
         # get in day's sheet
         time.sleep(1)
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.CSS_SELECTOR, f'div[data-day="{date_to_enter}"]')))
         day_box = driver.find_element(By.CSS_SELECTOR, f'div[data-day="{date_to_enter}"]')
         day_box.click()
 
@@ -137,8 +155,9 @@ def Track(driver, days_list, excel_tasks):
         list_inputs = driver.find_elements(By.XPATH, "//tr[@data-time-entries-table-target='timeEntries']")
 
         # check if there is any input in AMS before updating tasks
-        if list_inputs:
-            raise ValueError(f'The sheet of {day} is not empty')
+        if not list_inputs:
+            # input tasks
+            upload_tasks(driver, tasks_to_upload)
+        else:
+            print(f'The sheet of {day} is not empty. Not tracking hours.')
 
-        # input tasks
-        upload_tasks(driver, tasks_to_upload)

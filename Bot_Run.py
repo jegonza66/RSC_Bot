@@ -40,11 +40,6 @@ def AMS_Track():
 def BNED_DD(driver, Credentials):
     # Download adoption and enrollment files
     adoption_files_path, enrollment_files_path, Warning = Cyberduck.get_new_old_files(Credentials=Credentials)
-    # Lock screen
-    # print('Locking Screen')
-    # subprocess.call(cmd)
-    # # Save console prints to Reports file
-    # sys.stdout = Functions.Logger(Credentials)
     # DD1: adoptions and enrollments file comparison
     Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption_files_path,
                                                         enrollment_files_path=enrollment_files_path,
@@ -91,9 +86,7 @@ def BNED_DD(driver, Credentials):
     sys.stdout.close()
     # Change dir to main path
     os.chdir(Credentials['main_path'])
-    # Hibernate after 5 minutes
-    time.sleep(5 * 60)
-    os.system("shutdown.exe /h")
+
 
 # Log in to connect first to solve captcha
 # Get DD_update file save path Verba Connect username and password and Cyberduck download paths
@@ -103,11 +96,11 @@ driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 
 # Define run days and times
 schedule.every().monday.at("00:01").do(AMS_Track)
-schedule.every().monday.at("03:35").do(BNED_DD, driver, Credentials)
-schedule.every().tuesday.at("03:35").do(BNED_DD, driver, Credentials)
-schedule.every().wednesday.at("03:35").do(BNED_DD, driver, Credentials)
-schedule.every().thursday.at("03:35").do(BNED_DD, driver, Credentials)
-schedule.every().friday.at("03:35").do(BNED_DD, driver, Credentials)
+schedule.every().monday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().tuesday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().wednesday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().thursday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().friday.at("02:35").do(BNED_DD, driver, Credentials)
 
 # Run every day
 while True:
