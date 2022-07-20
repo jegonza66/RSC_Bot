@@ -66,6 +66,7 @@ def Verba_Credentials(Credentials, Credentials_file = 'Credentials/Credentials.p
                     'Please copy and paste the path to the adoption and enrollments folder.\nPath:').replace('\\',
                                                                                                          '/') + '/'
         # Save Verba credentials in Credentials file
+        os.makedirs('Credentials', exist_ok=True)
         f = open(Credentials_file, 'wb')
         pickle.dump(Credentials, f)
         f.close()

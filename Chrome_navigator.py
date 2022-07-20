@@ -21,18 +21,18 @@ def verba_connect_login(Credentials):
 
     # Login to Verba Connect
     # Select the id box
-    id_box = driver.find_element_by_id('username')
+    id_box = driver.find_element(By.ID, 'username')
     # Send id information
     id_box.send_keys(Verba_Username)
 
     # Find password box
-    pass_box = driver.find_element_by_id('password')
+    pass_box = driver.find_element(By.ID, 'password')
     # Send password
     pass_box.send_keys(Verba_Password)
 
     # Find login button
     login_button_css = 'button[type="submit"]'
-    login_button = driver.find_element_by_css_selector(login_button_css)
+    login_button = driver.find_element(By.CSS_SELECTOR, login_button_css)
     # Click login
     login_button.click()
 
