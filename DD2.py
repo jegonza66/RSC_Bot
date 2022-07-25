@@ -866,7 +866,7 @@ def check_change(row, index, previous_school, previous_catalog, DD_update, drive
     return DD_update, previous_school, previous_catalog
 
 
-def run(Credentials, DD_update, driver, total_count=5):
+def run(Credentials, DD_update, driver, total_count=2):
 
     # Define run parameters
     count = 0

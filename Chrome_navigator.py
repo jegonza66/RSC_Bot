@@ -136,13 +136,19 @@ def verba_open_item_menu(driver):
     # Open Items Menu
     try:
         Items_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / a / div'
-        Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
-        # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
-        ActionChains(driver).move_to_element(Items_tab).perform()
-        # click connect items tab
-        connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
-        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
+        # Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+        # ActionChains(driver).move_to_element(Items_tab).perform()
+        # # click connect items tab
+        # connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
+        # WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
+        # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+
+        # Click view items list tab
+        view_items_tab_xpath = '/ html / body / div[1] / div / div[1] / div[2] / div / div / div / div[1] / a[1]'
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, view_items_tab_xpath)))
+        WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, view_items_tab_xpath))).click()
         # Click search bar to chek if open
         search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
         WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
@@ -155,13 +161,19 @@ def verba_open_item_menu(driver):
         # Try again
         try:
             Items_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / a / div'
-            Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
-            # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
-            ActionChains(driver).move_to_element(Items_tab).perform()
-            # click connect items tab
-            connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
-            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
-            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, Items_xpath))).click()
+            # Items_tab = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, Items_xpath)))
+            # ActionChains(driver).move_to_element(Items_tab).perform()
+            # # click connect items tab
+            # connect_tab_xpath = '/ html / body / div[1] / div / nav / div[1] / div[2] / div / div / a[1]'
+            # WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, connect_tab_xpath)))
+            # WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, connect_tab_xpath))).click()
+
+            # Click view items list tab
+            view_items_tab_xpath = '/ html / body / div[1] / div / div[1] / div[2] / div / div / div / div[1] / a[1]'
+            WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, view_items_tab_xpath)))
+            WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, view_items_tab_xpath))).click()
             # Click search bar to chek if open
             search_bar_xpath = '/ html / body / div[1] / div / div[1] / div[3] / div / div / div[1] / div[1] / input'
             WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, search_bar_xpath)))
