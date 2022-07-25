@@ -47,7 +47,7 @@ def BNED_DD(driver, Credentials):
     # Save Report File
     sys.stdout.close()
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials, date)
+    sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
     # Ask for schools and catalogs to leave out of online check and get report
     DD_update, schools_catalogs_report, reports_folder_path = Reports_automation.get_reports(driver=driver, DD_update=DD_update)
     # Wait for Slurpee to finish before checking
@@ -57,7 +57,7 @@ def BNED_DD(driver, Credentials):
     # DD2: Validate changes in Connect
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
     # Save DD2_update file without report cases
-    sys.stdout = Functions.Logger(Credentials, date)
+    sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
     # If decided to ask reports before
     if schools_catalogs_report != {}:
@@ -66,9 +66,9 @@ def BNED_DD(driver, Credentials):
         # Save Report File
         sys.stdout.close()
         # Re run online check on missing report cases and No logical reason
-        DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
+        DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver, date=date)
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials, date)
+    sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
     # Re check "No logical reason cases"
     Functions.wipe_no_logical_cases(DD_update=DD_update)
     # Save Report File
@@ -76,7 +76,7 @@ def BNED_DD(driver, Credentials):
     # Re run online check on missing report cases
     DD_update = DD2.run(Credentials=Credentials, DD_update=DD_update, driver=driver)
     # Save console prints to Reports file
-    sys.stdout = Functions.Logger(Credentials, date)
+    sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
     # Save DD2_update final file (overwrites the first one)
     Functions.save_DD2(DD_update=DD_update, Credentials=Credentials, date=date)
     # print warning about downloaded files if necessary

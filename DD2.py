@@ -866,7 +866,7 @@ def check_change(row, index, previous_school, previous_catalog, DD_update, drive
     return DD_update, previous_school, previous_catalog
 
 
-def run(Credentials, DD_update, driver, total_count=2):
+def run(Credentials, DD_update, driver, date, total_count=2):
 
     # Define run parameters
     count = 0
@@ -890,7 +890,7 @@ def run(Credentials, DD_update, driver, total_count=2):
                    (row['Type of Change'] == 'deactivated enrollment') or (row['Type of Change'] == 'new schedule')
             if not skip:
                 # Save console prints to Reports file
-                sys.stdout = Functions.Logger(Credentials)
+                sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
 
                 case += 1
                 print('\nCase {} of {}\nTime elapsed: {}'.format(case, missing_rows,
@@ -916,7 +916,7 @@ def run(Credentials, DD_update, driver, total_count=2):
         count += 1
         if missing_rows:
             # Save console prints to Reports file
-            sys.stdout = Functions.Logger(Credentials)
+            sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
 
             print('\n{}. Waiting to re-run on {} unchecked cases...'.format(count, missing_rows))
             driver.back()
@@ -925,7 +925,7 @@ def run(Credentials, DD_update, driver, total_count=2):
             previous_catalog = ''
             sys.stdout.close()
 
-    sys.stdout = Functions.Logger(Credentials)
+    sys.stdout = Functions.Logger(Credentials=Credentials, date=date)
     print('\nTotal run time: {}'.format(str(datetime.now() - startTime).split('.')[0]))
     sys.stdout.close()
     return DD_update
