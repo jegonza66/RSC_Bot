@@ -11,8 +11,6 @@ import os
 
 # Get DD_update file save path Verba Connect username and password and Cyberduck download paths
 Credentials = Paths_Credentials.get()
-# Open Chrome and log in to Verba Connect
-driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 # Get Files
 adoption_files_path, enrollment_files_path, Warning = Functions.get_files(Credentials=Credentials)
 # # Save console prints to Reports file
@@ -25,6 +23,8 @@ Old_ad_file, New_ad_file, DD_update, date = DD1.run(adoption_files_path=adoption
 sys.stdout.close()
 # Save console prints to Reports file
 sys.stdout = Functions.Logger(Credentials, date)
+# Open Chrome and log in to Verba Connect
+driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 # Ask for schools and catalogs to leave out of online check and get report
 DD_update, schools_catalogs_report, reports_folder_path = Reports_automation.get_reports(driver=driver, DD_update=DD_update)
 # Wait for Slurpee to finish before checking

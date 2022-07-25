@@ -96,11 +96,11 @@ driver = Chrome_navigator.verba_connect_login(Credentials=Credentials)
 
 # Define run days and times
 schedule.every().monday.at("00:01").do(AMS_Track)
-schedule.every().monday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().tuesday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().wednesday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().thursday.at("02:35").do(BNED_DD, driver, Credentials)
-schedule.every().friday.at("02:35").do(BNED_DD, driver, Credentials)
+schedule.every().monday.at("00:05").do(BNED_DD, driver, Credentials)
+schedule.every().tuesday.at("00:05").do(BNED_DD, driver, Credentials)
+schedule.every().wednesday.at("00:05").do(BNED_DD, driver, Credentials)
+schedule.every().thursday.at("00:05").do(BNED_DD, driver, Credentials)
+schedule.every().friday.at("00:05").do(BNED_DD, driver, Credentials)
 
 # Run every day
 while True:
